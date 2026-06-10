@@ -40,7 +40,7 @@ export function Header({ locale }: { locale: string }) {
           <img src="/logo.png" alt="Veritamom" height={52} style={{ height: '52px', width: 'auto' }} />
           <div className="hidden sm:block">
             <span className="block font-serif font-bold leading-none" style={{ color: '#8B1A2B', fontSize: '22px', fontFamily: 'Georgia, "Times New Roman", serif' }}>
-              veritamom
+              VERITAMOM
             </span>
             <span className="block font-semibold uppercase leading-none mt-1" style={{ color: '#C9A84C', fontSize: '7px', letterSpacing: '0.17em' }}>
               The Gold Standard in Maternal Intelligence
