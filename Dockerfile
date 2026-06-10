@@ -16,8 +16,9 @@ RUN npm install
 # Generate Prisma client
 RUN npx prisma generate
 
-# Copy source code
+# Copy source code and public assets
 COPY . .
+RUN mkdir -p /app/public
 
 # Build the app
 ENV NODE_ENV=production
@@ -39,7 +40,8 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # Copy built output
-COPY --from=builder /app/public ./public
+RUN mkdir -p ./public
+COPY --from=builder /app/public/ ./public/
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/prisma ./prisma
