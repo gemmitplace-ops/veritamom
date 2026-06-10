@@ -49,9 +49,14 @@ COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder /app/node_modules/better-sqlite3 ./node_modules/better-sqlite3
 COPY --from=builder /app/node_modules/@prisma/adapter-better-sqlite3 ./node_modules/@prisma/adapter-better-sqlite3
+COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
+COPY --from=builder /app/node_modules/.bin/prisma ./node_modules/.bin/prisma
+
+# Copy entrypoint
+COPY entrypoint.sh ./entrypoint.sh
 
 # Create data directory for SQLite
-RUN mkdir -p /app/prisma && chown -R nextjs:nodejs /app
+RUN mkdir -p /app/prisma && chown -R nextjs:nodejs /app && chmod +x /app/entrypoint.sh
 
 USER nextjs
 
@@ -60,4 +65,4 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-CMD ["node", "server.js"]
+CMD ["/bin/sh", "/app/entrypoint.sh"]
