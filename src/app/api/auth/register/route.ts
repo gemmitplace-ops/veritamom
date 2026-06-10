@@ -48,6 +48,17 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // Fire-and-forget: add to Gemmit prospects
+    const gemmitUrl = process.env.GEMMIT_INTERNAL_URL;
+    const gemmitSecret = process.env.GEMMIT_INTERNAL_SECRET;
+    if (gemmitUrl && gemmitSecret) {
+      fetch(`${gemmitUrl}/api/internal/prospect`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-internal-secret': gemmitSecret },
+        body: JSON.stringify({ email: user.email, full_name: user.name }),
+      }).catch(() => {}); // never block registration
+    }
+
     const token = signToken({ userId: user.id, email: user.email, role: user.role });
 
     const response = NextResponse.json({ user, token }, { status: 201 });
