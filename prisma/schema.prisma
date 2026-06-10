@@ -1,0 +1,304 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["queryCompiler", "driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id                        String             @id @default(cuid())
+  email                     String             @unique
+  passwordHash              String
+  name                      String
+  username                  String             @unique
+  avatarUrl                 String?
+  language                  Language           @default(EN)
+  country                   String?
+  city                      String?
+  role                      UserRole           @default(MOTHER)
+  verifiedProfessionalTitle String?
+  pregnancyStatus           PregnancyStatus    @default(PREGNANT)
+  dueDate                   DateTime?
+  childBirthdate            DateTime?
+  bio                       String?
+  isOnboardingComplete      Boolean            @default(false)
+  createdAt                 DateTime           @default(now())
+  updatedAt                 DateTime           @updatedAt
+
+  posts         Post[]
+  comments      Comment[]
+  following     Follow[]             @relation("follower")
+  followers     Follow[]             @relation("following")
+  sentMessages  Message[]
+  conversations ConversationMember[]
+  notifications Notification[]
+  babyLogs      BabyLog[]
+  flagReports   FlagReport[]
+  paperLikes    PaperLike[]
+  paperSaves    PaperSave[]
+  postVotes     PostVote[]
+}
+
+model ResearchPaper {
+  id                 String     @id @default(cuid())
+  title              String
+  citation           String
+  journalName        String
+  publishedYear      Int
+  summary            String?
+  summaryZh          String?
+  summaryKo          String?
+  fullPaperUrl       String?
+  pdfPath            String?
+  trimesterRelevance String     @default("ALL")
+  isPublished        Boolean    @default(false)
+  viewCount          Int        @default(0)
+  likeCount          Int        @default(0)
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+
+  tags     PaperTag[]
+  likes    PaperLike[]
+  saves    PaperSave[]
+  comments Comment[]
+}
+
+model Post {
+  id          String       @id @default(cuid())
+  title       String
+  body        String
+  authorId    String
+  category    PostCategory @default(QUESTION)
+  language    Language     @default(EN)
+  upvotes     Int          @default(0)
+  downvotes   Int          @default(0)
+  isPinned    Boolean      @default(false)
+  isModerated Boolean      @default(false)
+  isFlagged   Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  author   User       @relation(fields: [authorId], references: [id])
+  votes    PostVote[]
+  comments Comment[]
+}
+
+model Comment {
+  id          String     @id @default(cuid())
+  body        String
+  authorId    String
+  parentId    String?
+  targetType  TargetType
+  targetId    String
+  postId      String?
+  paperId     String?
+  isModerated Boolean    @default(false)
+  isFlagged   Boolean    @default(false)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  author  User           @relation(fields: [authorId], references: [id])
+  parent  Comment?       @relation("CommentReplies", fields: [parentId], references: [id])
+  replies Comment[]      @relation("CommentReplies")
+  post    Post?          @relation(fields: [postId], references: [id])
+  paper   ResearchPaper? @relation(fields: [paperId], references: [id])
+}
+
+model Follow {
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+
+  follower  User @relation("follower", fields: [followerId], references: [id])
+  following User @relation("following", fields: [followingId], references: [id])
+
+  @@id([followerId, followingId])
+}
+
+model Conversation {
+  id        String   @id @default(cuid())
+  isGroup   Boolean  @default(false)
+  name      String?
+  createdAt DateTime @default(now())
+
+  members  ConversationMember[]
+  messages Message[]
+}
+
+model ConversationMember {
+  conversationId String
+  userId         String
+  joinedAt       DateTime @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id])
+  user         User         @relation(fields: [userId], references: [id])
+
+  @@id([conversationId, userId])
+}
+
+model Message {
+  id             String   @id @default(cuid())
+  body           String
+  senderId       String
+  conversationId String
+  readAt         DateTime?
+  createdAt      DateTime @default(now())
+
+  sender       User         @relation(fields: [senderId], references: [id])
+  conversation Conversation @relation(fields: [conversationId], references: [id])
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  body      String
+  isRead    Boolean          @default(false)
+  link      String?
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model BabyLog {
+  id        String      @id @default(cuid())
+  userId    String
+  type      BabyLogType
+  startTime DateTime
+  endTime   DateTime?
+  notes     String?
+  value     String?
+  createdAt DateTime    @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model MilestoneWeek {
+  week                  Int    @id
+  title                 String
+  description           String
+  babySize              String
+  babySizeComparison    String
+  developmentHighlights String
+}
+
+model Tag {
+  id   String @id @default(cuid())
+  name String @unique
+  slug String @unique
+
+  papers PaperTag[]
+}
+
+model PaperTag {
+  paperId String
+  tagId   String
+
+  paper ResearchPaper @relation(fields: [paperId], references: [id])
+  tag   Tag           @relation(fields: [tagId], references: [id])
+
+  @@id([paperId, tagId])
+}
+
+model FlagReport {
+  id         String     @id @default(cuid())
+  reporterId String
+  targetType TargetType
+  targetId   String
+  reason     String
+  status     FlagStatus @default(PENDING)
+  createdAt  DateTime   @default(now())
+
+  reporter User @relation(fields: [reporterId], references: [id])
+}
+
+model PaperLike {
+  userId    String
+  paperId   String
+  createdAt DateTime @default(now())
+
+  user  User          @relation(fields: [userId], references: [id])
+  paper ResearchPaper @relation(fields: [paperId], references: [id])
+
+  @@id([userId, paperId])
+}
+
+model PaperSave {
+  userId    String
+  paperId   String
+  createdAt DateTime @default(now())
+
+  user  User          @relation(fields: [userId], references: [id])
+  paper ResearchPaper @relation(fields: [paperId], references: [id])
+
+  @@id([userId, paperId])
+}
+
+model PostVote {
+  userId    String
+  postId    String
+  value     Int
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  post Post @relation(fields: [postId], references: [id])
+
+  @@id([userId, postId])
+}
+
+enum Language {
+  EN
+  ZH
+  KO
+}
+
+enum UserRole {
+  MOTHER
+  ADMIN
+  VERIFIED_PROFESSIONAL
+}
+
+enum PregnancyStatus {
+  PREGNANT
+  PARENT
+  TRYING
+  PROFESSIONAL
+}
+
+enum PostCategory {
+  QUESTION
+  WIN
+  CONCERN
+  PRODUCT_REVIEW
+  RECIPE
+}
+
+enum TargetType {
+  PAPER
+  POST
+  COMMENT
+}
+
+enum NotificationType {
+  REPLY
+  FOLLOW
+  MENTION
+  WEEKLY_UPDATE
+}
+
+enum BabyLogType {
+  FEED
+  SLEEP
+  DIAPER
+  GROWTH
+  SYMPTOM
+  KICK
+}
+
+enum FlagStatus {
+  PENDING
+  RESOLVED
+}
