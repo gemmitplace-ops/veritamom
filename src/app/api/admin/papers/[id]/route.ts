@@ -8,7 +8,7 @@ export async function PATCH(
 ) {
   try {
     const user = requireAuth(request);
-    if (user.role !== 'ADMIN') {
+    if (user.role !== 'ADMIN' && user.role !== 'PUBLISHER') {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 

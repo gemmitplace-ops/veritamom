@@ -20,7 +20,7 @@ const paperSchema = z.object({
 
 export async function GET(request: NextRequest) {
   const user = requireAuth(request);
-  if (user.role !== 'ADMIN') {
+  if (user.role !== 'ADMIN' && user.role !== 'PUBLISHER') {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const user = requireAuth(request);
-    if (user.role !== 'ADMIN') {
+    if (user.role !== 'ADMIN' && user.role !== 'PUBLISHER') {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 

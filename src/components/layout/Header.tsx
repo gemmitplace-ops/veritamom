@@ -123,8 +123,8 @@ export function Header({ locale }: { locale: string }) {
                     <Link href="/notifications" className="flex items-center px-4 py-2 text-sm hover:bg-brand-cream dark:hover:bg-gray-800 transition-colors md:hidden" onClick={() => setMenuOpen(false)}>
                       {t('nav.notifications')}
                     </Link>
-                    {user.role === 'ADMIN' && (
-                      <Link href="/admin/papers" className="flex items-center px-4 py-2 text-sm hover:bg-brand-cream dark:hover:bg-gray-800 transition-colors" onClick={() => setMenuOpen(false)}>
+                    {(user.role === 'ADMIN' || user.role === 'PUBLISHER') && (
+                      <Link href="/publisher/papers" className="flex items-center px-4 py-2 text-sm hover:bg-brand-cream dark:hover:bg-gray-800 transition-colors" onClick={() => setMenuOpen(false)}>
                         {t('nav.admin')}
                       </Link>
                     )}

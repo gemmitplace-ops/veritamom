@@ -9,7 +9,7 @@ import { FileText, Flag, BadgeCheck, Users, Shield } from 'lucide-react';
 
 const adminSections = [
   {
-    href: '/admin/papers',
+    href: '/publisher/papers',
     icon: FileText,
     title: 'Research Papers',
     description: 'Add, edit and publish research papers shown on the homepage.',

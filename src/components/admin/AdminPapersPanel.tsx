@@ -67,7 +67,7 @@ export function AdminPapersPanel() {
     load();
   }
 
-  if (user?.role !== 'ADMIN') {
+  if (user?.role !== 'ADMIN' && user?.role !== 'PUBLISHER') {
     return <div className="text-center py-16 text-gray-500">Access denied.</div>;
   }
 
@@ -86,9 +86,7 @@ export function AdminPapersPanel() {
 
       {/* Admin nav */}
       <div className="flex gap-3 mb-6 text-sm">
-        <Link href="/admin/papers" className="text-brand-crimson font-medium border-b-2 border-brand-crimson pb-1">Papers</Link>
-        <Link href="/admin/flags" className="text-gray-500 hover:text-brand-crimson pb-1">Flags</Link>
-        <Link href="/admin/professionals" className="text-gray-500 hover:text-brand-crimson pb-1">Professionals</Link>
+        <Link href="/publisher/papers" className="text-brand-crimson font-medium border-b-2 border-brand-crimson pb-1">Papers</Link>
       </div>
 
       {showForm && (
