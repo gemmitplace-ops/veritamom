@@ -56,7 +56,11 @@ export async function POST(request: NextRequest) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-internal-secret': gemmitSecret },
         body: JSON.stringify({ email: user.email, full_name: user.name }),
-      }).catch(() => {}); // never block registration
+      })
+        .then(r => console.log('[gemmit-prospect] status:', r.status))
+        .catch(e => console.error('[gemmit-prospect] error:', e.message));
+    } else {
+      console.log('[gemmit-prospect] skipped — url:', gemmitUrl, 'secret:', !!gemmitSecret);
     }
 
     const token = signToken({ userId: user.id, email: user.email, role: user.role });
