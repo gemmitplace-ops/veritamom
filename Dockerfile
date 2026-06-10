@@ -22,7 +22,7 @@ COPY . .
 # Build the app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN NODE_OPTIONS="--max-old-space-size=1536" npm run build
+RUN NODE_OPTIONS="--max-old-space-size=1800" NEXT_TELEMETRY_DISABLED=1 npm run build
 
 # Stage 2: Production runner
 FROM node:20-alpine AS runner
