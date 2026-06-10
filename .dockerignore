@@ -1,0 +1,14 @@
+.next
+node_modules
+.env
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+.git
+.gitignore
+README.md
+Dockerfile
+docker-compose.yml
+.dockerignore
+Public/
