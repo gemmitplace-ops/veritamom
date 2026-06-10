@@ -55,8 +55,8 @@ COPY --from=builder /app/node_modules/.bin/prisma ./node_modules/.bin/prisma
 # Copy entrypoint
 COPY entrypoint.sh ./entrypoint.sh
 
-# Create data directory for SQLite
-RUN mkdir -p /app/prisma && chown -R nextjs:nodejs /app && chmod +x /app/entrypoint.sh
+# Create data directory for SQLite and pre-create db file with correct ownership
+RUN mkdir -p /app/prisma && touch /app/prisma/prod.db && chown -R nextjs:nodejs /app && chmod +x /app/entrypoint.sh
 
 USER nextjs
 
