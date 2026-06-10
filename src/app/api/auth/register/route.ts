@@ -63,6 +63,7 @@ export async function POST(request: NextRequest) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: 'validation', details: error.issues }, { status: 400 });
     }
-    return NextResponse.json({ error: 'generic' }, { status: 500 });
+    console.error('Registration error:', error);
+    return NextResponse.json({ error: 'generic', detail: String(error) }, { status: 500 });
   }
 }
