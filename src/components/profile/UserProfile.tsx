@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { getCountryFlag } from '@/lib/utils';
-import { BadgeCheck, MapPin } from 'lucide-react';
+import { BadgeCheck, MapPin, Shield } from 'lucide-react';
+import { Link } from '@/i18n/navigation';
 
 interface ProfileUser {
   id: string;
@@ -113,6 +114,20 @@ export function UserProfile({ username }: { username: string }) {
             </button>
           )}
         </div>
+
+        {/* Admin link */}
+        {isOwnProfile && currentUser?.role === 'ADMIN' && (
+          <div className="mt-4">
+            <Link
+              href="/admin"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors hover:opacity-90"
+              style={{ backgroundColor: '#8B1A2B' }}
+            >
+              <Shield size={14} />
+              Admin Dashboard
+            </Link>
+          </div>
+        )}
 
         {/* Stats */}
         <div className="flex gap-6 mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
