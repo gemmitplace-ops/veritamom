@@ -24,8 +24,9 @@ export function Header({ locale }: { locale: string }) {
 
   function switchLocale(code: string) {
     const segments = pathname.split('/');
-    segments[1] = code;
-    router.push(segments.join('/') || '/');
+    // pathname from next-intl has no locale prefix, so build the full path manually
+    const pathWithoutLocale = segments.slice(1).join('/');
+    window.location.href = `/${code}${pathWithoutLocale ? `/${pathWithoutLocale}` : ''}`;
   }
 
   return (
