@@ -1,10 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
-// @ts-ignore
-const prisma = new PrismaClient({
-  datasourceUrl: 'file:./prisma/dev.db',
-});
+const prisma = new PrismaClient();
 
 const milestones = [
   { week: 4, title: 'The beginning', description: 'Your baby is a tiny cluster of cells called a blastocyst, implanting into your uterine wall. Major development of the neural tube, heart, and other organs begins.', babySize: 'poppy seed', babySizeComparison: '🌱', developmentHighlights: 'Neural tube forming, heart cells developing, basic body structure establishing. Your embryo is about 2mm long.' },
