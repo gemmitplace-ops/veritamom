@@ -7,7 +7,15 @@ import { AppShell } from '@/components/layout/AppShell';
 import { Link } from '@/i18n/navigation';
 import { FileText, Flag, BadgeCheck, Users, Shield } from 'lucide-react';
 
+
 const adminSections = [
+  {
+    href: '/admin/users',
+    icon: Users,
+    title: 'User Management',
+    description: 'View all users, promote to Publisher or demote roles.',
+    color: '#8B1A2B',
+  },
   {
     href: '/publisher/papers',
     icon: FileText,
