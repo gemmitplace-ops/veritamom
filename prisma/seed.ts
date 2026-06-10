@@ -1,7 +1,11 @@
 import { PrismaClient } from '@prisma/client';
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import bcrypt from 'bcryptjs';
 
-const prisma = new PrismaClient();
+const DATABASE_URL = process.env.DATABASE_URL || 'file:./prisma/dev.db';
+const adapter = new PrismaBetterSqlite3({ url: DATABASE_URL });
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const prisma = new PrismaClient({ adapter } as any);
 
 const milestones = [
   { week: 4, title: 'The beginning', description: 'Your baby is a tiny cluster of cells called a blastocyst, implanting into your uterine wall. Major development of the neural tube, heart, and other organs begins.', babySize: 'poppy seed', babySizeComparison: '🌱', developmentHighlights: 'Neural tube forming, heart cells developing, basic body structure establishing. Your embryo is about 2mm long.' },
