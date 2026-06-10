@@ -62,7 +62,7 @@ function accentColor(category: string): string {
   return ['WIN', 'RECIPE', 'PRODUCT_REVIEW'].includes(category) ? '#C9A84C' : '#8B1A2B';
 }
 
-export function PostCard({ post, onUpdate }: PostCardProps) {
+export function PostCard({ post, onUpdate: _onUpdate }: PostCardProps) {
   const t = useTranslations();
   const { user } = useAuth();
   const [votes, setVotes] = useState({ upvotes: post.upvotes, downvotes: post.downvotes, userVote: post.userVote });

@@ -35,6 +35,7 @@ export function Header({ locale }: { locale: string }) {
 
         {/* Logo */}
         <Link href="/" className="flex-shrink-0 flex items-center gap-2.5">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logo.png" alt="Veritamom" height={52} style={{ height: '52px', width: 'auto' }} />
           <div className="hidden sm:block">
             <span className="block font-serif font-bold leading-none" style={{ color: '#8B1A2B', fontSize: '22px', fontFamily: 'Georgia, "Times New Roman", serif' }}>
