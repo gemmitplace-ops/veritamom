@@ -23,8 +23,8 @@ export function Header({ locale }: { locale: string }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   function switchLocale(code: string) {
-    const segments = pathname.split('/');
-    // pathname from next-intl has no locale prefix, so build the full path manually
+    // pathname includes locale prefix e.g. '/en/community' → strip first segment
+    const segments = pathname.split('/').filter(Boolean);
     const pathWithoutLocale = segments.slice(1).join('/');
     window.location.href = `/${code}${pathWithoutLocale ? `/${pathWithoutLocale}` : ''}`;
   }
