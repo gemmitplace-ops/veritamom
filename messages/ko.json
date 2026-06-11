@@ -254,6 +254,38 @@
     "noFlags": "신고된 콘텐츠가 없습니다.",
     "noProfessionals": "대기 중인 신청이 없습니다."
   },
+  "taxonomy": {
+    "title": "연구 분류",
+    "popularTags": "인기 태그",
+    "trimesters": "임신 기간",
+    "first": "임신 초기",
+    "second": "임신 중기",
+    "third": "임신 후기",
+    "developmentalPhases": "발달 단계",
+    "toxins": "독소 및 노출",
+    "nutrition": "영양",
+    "mentalHealth": "정신 건강",
+    "medications": "약물",
+    "labourBirth": "분만 및 출산",
+    "postpartum": "산후",
+    "breastfeeding": "모유 수유",
+    "productSafety": "제품 안전"
+  },
+  "sidebar": {
+    "trendingRecalls": "인기 게시물",
+    "communityThreads": "커뮤니티 스레드",
+    "communityThread": "커뮤니티 스레드",
+    "showMore": "더 보기",
+    "weeklyFeature": "주간 특집",
+    "veritamomBrief": "Veritamom 브리프",
+    "briefDescription": "매주 의료팀이 엄선한 근거 기반 인사이트를 전달해 드립니다.",
+    "readThisWeek": "이번 주 읽기"
+  },
+  "research2": {
+    "latestResearch": "최신 연구",
+    "editorial": "에디토리얼 · 주간 브리프",
+    "plainEnglish": "쉬운 설명 요약"
+  },
   "common": {
     "loading": "로딩 중...",
     "error": "오류가 발생했습니다",

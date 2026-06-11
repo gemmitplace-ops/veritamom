@@ -254,6 +254,38 @@
     "noFlags": "暂无举报内容。",
     "noProfessionals": "暂无待处理申请。"
   },
+  "taxonomy": {
+    "title": "研究分类",
+    "popularTags": "热门标签",
+    "trimesters": "妊娠期",
+    "first": "妊娠初期",
+    "second": "妊娠中期",
+    "third": "妊娠晚期",
+    "developmentalPhases": "发育阶段",
+    "toxins": "毒素与暴露",
+    "nutrition": "营养",
+    "mentalHealth": "心理健康",
+    "medications": "药物",
+    "labourBirth": "分娩与生产",
+    "postpartum": "产后",
+    "breastfeeding": "母乳喂养",
+    "productSafety": "产品安全"
+  },
+  "sidebar": {
+    "trendingRecalls": "热门话题",
+    "communityThreads": "社区讨论",
+    "communityThread": "社区讨论",
+    "showMore": "显示更多",
+    "weeklyFeature": "每周精选",
+    "veritamomBrief": "Veritamom 周报",
+    "briefDescription": "由我们的医疗团队精心策划的循证见解——每周推送。",
+    "readThisWeek": "阅读本周内容"
+  },
+  "research2": {
+    "latestResearch": "最新研究",
+    "editorial": "编辑 · 每周简报",
+    "plainEnglish": "通俗易懂摘要"
+  },
   "common": {
     "loading": "加载中...",
     "error": "发生错误",

@@ -35,6 +35,7 @@ interface Paper {
 
 export function ResearchFeed({ locale }: { locale: string }) {
   const t = useTranslations();
+  const t2 = useTranslations('research2');
   const [papers, setPapers] = useState<Paper[]>([]);
   const [loading, setLoading] = useState(true);
   const [trimester, setTrimester] = useState('ALL');
@@ -70,7 +71,7 @@ export function ResearchFeed({ locale }: { locale: string }) {
       {/* Feed label */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="font-serif text-lg text-gray-800 dark:text-gray-200">
-          {trimester === 'ALL' ? 'Latest Research' : `${trimester.charAt(0) + trimester.slice(1).toLowerCase()} Trimester`}
+          {trimester === 'ALL' ? t2('latestResearch') : t(`research.filter${trimester.charAt(0) + trimester.slice(1).toLowerCase()}` as never)}
         </h2>
         <span className="text-xs text-gray-400">{papers.length} papers</span>
       </div>
@@ -82,7 +83,7 @@ export function ResearchFeed({ locale }: { locale: string }) {
           <div className="p-5 flex-1">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-[10px] font-bold uppercase tracking-[0.16em]" style={{ color: '#A88C3A' }}>
-                Editorial · Weekly Brief
+                {t2('editorial')}
               </span>
             </div>
             <h2 className="font-serif text-[18px] leading-snug mb-2" style={{ color: '#8B1A2B', fontFamily: 'Georgia, "Times New Roman", serif' }}>

@@ -254,6 +254,38 @@
     "noFlags": "No flagged content.",
     "noProfessionals": "No pending applications."
   },
+  "taxonomy": {
+    "title": "Research Taxonomy",
+    "popularTags": "Popular Tags",
+    "trimesters": "Trimesters",
+    "first": "1st Trimester",
+    "second": "2nd Trimester",
+    "third": "3rd Trimester",
+    "developmentalPhases": "Developmental Phases",
+    "toxins": "Toxins & Exposures",
+    "nutrition": "Nutrition",
+    "mentalHealth": "Mental Health",
+    "medications": "Medications",
+    "labourBirth": "Labour & Birth",
+    "postpartum": "Postpartum",
+    "breastfeeding": "Breastfeeding",
+    "productSafety": "Product Safety"
+  },
+  "sidebar": {
+    "trendingRecalls": "Trending Recalls",
+    "communityThreads": "Community Threads",
+    "communityThread": "Community Thread",
+    "showMore": "Show more",
+    "weeklyFeature": "Weekly Feature",
+    "veritamomBrief": "The Veritamom Brief",
+    "briefDescription": "Evidence-based insights curated by our medical team — delivered weekly.",
+    "readThisWeek": "Read this week"
+  },
+  "research2": {
+    "latestResearch": "Latest Research",
+    "editorial": "Editorial · Weekly Brief",
+    "plainEnglish": "Plain-English Summary"
+  },
   "common": {
     "loading": "Loading...",
     "error": "An error occurred",
