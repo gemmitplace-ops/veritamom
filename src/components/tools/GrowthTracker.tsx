@@ -152,13 +152,20 @@ function ChildForm({ onSave, onCancel, initial }: {
   const [dob, setDob] = useState(initial?.dob ? initial.dob.slice(0, 10) : '');
   const [sex, setSex] = useState<'GIRL' | 'BOY'>(initial?.sex ?? 'GIRL');
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!name || !dob) return;
     setSaving(true);
-    await onSave(name, dob, sex);
-    setSaving(false);
+    setError(null);
+    try {
+      await onSave(name, dob, sex);
+    } catch {
+      setError('Something went wrong while saving. Please try again.');
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -185,6 +192,9 @@ function ChildForm({ onSave, onCancel, initial }: {
           ))}
         </div>
       </div>
+      {error && (
+        <p className="text-xs text-red-600 bg-red-50 border border-red-100 rounded-xl px-3 py-2.5">{error}</p>
+      )}
       <div className="flex gap-3">
         <button type="submit" disabled={!name || !dob || saving}
           className="flex-1 py-3 rounded-xl text-white font-medium text-sm disabled:opacity-50"
@@ -252,6 +262,7 @@ export function GrowthTracker() {
   const [formHeight, setFormHeight] = useState('');
   const [formHead, setFormHead] = useState('');
   const [savingEntry, setSavingEntry] = useState(false);
+  const [entryError, setEntryError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch('/api/children')
@@ -290,6 +301,7 @@ export function GrowthTracker() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, dob, sex }),
     });
+    if (!res.ok) throw new Error(`Failed to save child (${res.status})`);
     const data = await res.json();
     const child: ChildProfile = data.child;
     setChildren((prev) => [...prev, child]);
@@ -304,6 +316,7 @@ export function GrowthTracker() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, dob, sex }),
     });
+    if (!res.ok) throw new Error(`Failed to update child (${res.status})`);
     const data = await res.json();
     const updated: ChildProfile = data.child;
     setChildren((prev) => prev.map((c) => c.id === updated.id ? updated : c));
@@ -315,20 +328,27 @@ export function GrowthTracker() {
     e.preventDefault();
     if (!selectedChild || (!formWeight && !formHeight && !formHead)) return;
     setSavingEntry(true);
-    await fetch(`/api/children/${selectedChild.id}/growth`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        date: formDate,
-        weight: formWeight ? parseFloat(formWeight) : null,
-        height: formHeight ? parseFloat(formHeight) : null,
-        head: formHead ? parseFloat(formHead) : null,
-      }),
-    });
-    setFormWeight(''); setFormHeight(''); setFormHead('');
-    setShowForm(false);
-    setSavingEntry(false);
-    fetchEntries(selectedChild.id, selectedChild.dob);
+    setEntryError(null);
+    try {
+      const res = await fetch(`/api/children/${selectedChild.id}/growth`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          date: formDate,
+          weight: formWeight ? parseFloat(formWeight) : null,
+          height: formHeight ? parseFloat(formHeight) : null,
+          head: formHead ? parseFloat(formHead) : null,
+        }),
+      });
+      if (!res.ok) throw new Error(`Failed to save measurement (${res.status})`);
+      setFormWeight(''); setFormHeight(''); setFormHead('');
+      setShowForm(false);
+      fetchEntries(selectedChild.id, selectedChild.dob);
+    } catch {
+      setEntryError('Something went wrong while saving. Please try again.');
+    } finally {
+      setSavingEntry(false);
+    }
   }
 
   async function deleteEntry(logId: string) {
@@ -435,6 +455,9 @@ export function GrowthTracker() {
               <input type="number" step="0.1" min="0" max="60" value={formHead} onChange={(e) => setFormHead(e.target.value)} placeholder="—" className="w-full border border-gray-200 rounded-lg px-2 py-2 text-sm text-center focus:outline-none focus:border-brand-crimson" />
             </div>
           </div>
+          {entryError && (
+            <p className="text-xs text-red-600 bg-red-50 border border-red-100 rounded-xl px-3 py-2.5">{entryError}</p>
+          )}
           <button type="submit" disabled={savingEntry || (!formWeight && !formHeight && !formHead)}
             className="w-full py-2.5 rounded-xl text-white text-sm font-medium disabled:opacity-50"
             style={{ backgroundColor: '#8B1A2B' }}>

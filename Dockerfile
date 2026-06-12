@@ -48,6 +48,9 @@ COPY --from=builder /app/public/ ./public/
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/prisma ./prisma
+# The compose volume mounts over /app/prisma and shadows schema.prisma with the
+# first-deploy copy. Keep a fresh schema outside the volume for entrypoint's db push.
+COPY --from=builder /app/prisma/schema.prisma ./schema.prisma
 COPY --from=builder /app/messages ./messages
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
