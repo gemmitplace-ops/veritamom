@@ -8,6 +8,7 @@ import { ContractionTimer } from './ContractionTimer';
 import { MilestoneTracker } from './MilestoneTracker';
 import { BabyLogForm } from './BabyLogForm';
 import { DailySummary } from './DailySummary';
+import { GrowthTracker } from './GrowthTracker';
 import { Link } from '@/i18n/navigation';
 import { cn } from '@/lib/utils';
 import {
@@ -41,7 +42,7 @@ const TOOLS: ToolDef[] = [
   { id: 'feeding',      label: 'Feeding\nLog',         icon: <Droplets size={26} />,     color: '#2d7a4f', bg: 'rgba(45,122,79,0.10)',   section: 'newborn', forStatuses: ['PARENT'] },
   { id: 'sleep',        label: 'Sleep\nLog',           icon: <Moon size={26} />,         color: '#7c3aed', bg: 'rgba(124,58,237,0.10)', section: 'newborn', forStatuses: ['PARENT'] },
   { id: 'diaper',       label: 'Diaper\nLog',          icon: <Trash2 size={26} />,       color: '#b45309', bg: 'rgba(180,83,9,0.10)',    section: 'newborn', forStatuses: ['PARENT'] },
-  { id: 'growth',       label: 'Growth\nLog',          icon: <TrendingUp size={26} />,   color: '#8B1A2B', bg: 'rgba(139,26,43,0.10)',  section: 'newborn', forStatuses: ['PARENT'] },
+  { id: 'growth',       label: 'Growth\nChart',         icon: <TrendingUp size={26} />,   color: '#8B1A2B', bg: 'rgba(139,26,43,0.10)',  section: 'newborn', forStatuses: ['PARENT'] },
   // General
   { id: 'summary',      label: 'Daily\nSummary',       icon: <BookOpen size={26} />,     color: '#4b5563', bg: 'rgba(75,85,99,0.10)',    section: 'general', forStatuses: ['PREGNANT', 'PARENT', 'TRYING', 'PROFESSIONAL'] },
 ];
@@ -61,7 +62,7 @@ const COMPONENTS: Record<ToolId, React.ReactNode | null> = {
   feeding: <BabyLogForm type="FEED" />,
   sleep: <BabyLogForm type="SLEEP" />,
   diaper: <BabyLogForm type="DIAPER" />,
-  growth: <BabyLogForm type="GROWTH" />,
+  growth: <GrowthTracker />,
   summary: <DailySummary />,
 };
 
@@ -146,7 +147,7 @@ const PREVIEW_TOOLS: Array<{ label: string; icon: React.ReactNode; color: string
   { label: 'Feeding\nLog',        icon: <Droplets size={24} />,     color: '#2d7a4f', bg: 'rgba(45,122,79,0.10)' },
   { label: 'Sleep\nLog',          icon: <Moon size={24} />,         color: '#7c3aed', bg: 'rgba(124,58,237,0.10)' },
   { label: 'Diaper\nLog',         icon: <Trash2 size={24} />,       color: '#b45309', bg: 'rgba(180,83,9,0.10)' },
-  { label: 'Growth\nLog',         icon: <TrendingUp size={24} />,   color: '#8B1A2B', bg: 'rgba(139,26,43,0.10)' },
+  { label: 'Growth\nChart',        icon: <TrendingUp size={24} />,   color: '#8B1A2B', bg: 'rgba(139,26,43,0.10)' },
   { label: 'Symptom\nLog',        icon: <ClipboardList size={24} />,color: '#7c3aed', bg: 'rgba(124,58,237,0.10)' },
 ];
 
