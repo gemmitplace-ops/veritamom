@@ -30,6 +30,11 @@ RUN npx prisma generate
 COPY . .
 RUN mkdir -p /app/public
 
+# Type-check as a dedicated step: a type error fails the image build here.
+# Kept separate from `next build` (which has type checking disabled) so the
+# two never share a memory peak — combined they OOM the 2GB VPS.
+RUN NODE_OPTIONS="--max-old-space-size=1800" npx tsc --noEmit
+
 # Build the app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
