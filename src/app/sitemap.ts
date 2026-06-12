@@ -1,23 +1,32 @@
 import { MetadataRoute } from 'next';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 const BASE = 'https://veritamom.com';
 const locales = ['en', 'zh', 'ko'];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [articles, papers] = await Promise.all([
-    prisma.article.findMany({
-      where: { isPublished: true },
-      select: { slug: true, updatedAt: true },
-      orderBy: { publishedAt: 'desc' },
-    }),
-    prisma.researchPaper.findMany({
-      where: { isPublished: true },
-      select: { id: true, updatedAt: true },
-      orderBy: { createdAt: 'desc' },
-      take: 200,
-    }),
-  ]);
+  let articles: { slug: string; updatedAt: Date }[] = [];
+  let papers: { id: string; updatedAt: Date }[] = [];
+
+  try {
+    [articles, papers] = await Promise.all([
+      prisma.article.findMany({
+        where: { isPublished: true },
+        select: { slug: true, updatedAt: true },
+        orderBy: { publishedAt: 'desc' },
+      }),
+      prisma.researchPaper.findMany({
+        where: { isPublished: true },
+        select: { id: true, updatedAt: true },
+        orderBy: { createdAt: 'desc' },
+        take: 200,
+      }),
+    ]);
+  } catch {
+    // DB not yet migrated — return static pages only
+  }
 
   const staticPages = ['', '/community', '/tools'];
 
