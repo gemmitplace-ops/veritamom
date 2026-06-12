@@ -139,7 +139,13 @@
     },
     "noPostsYet": "暂无帖子。",
     "applyForVerification": "申请专业认证",
-    "verificationPending": "认证审核中"
+    "verificationPending": "认证审核中",
+    "myChildren": "我的孩子",
+    "childBoy": "男孩",
+    "childGirl": "女孩",
+    "childBorn": "出生",
+    "openGrowthChart": "打开生长曲线",
+    "visibleOnlyToYou": "仅自己可见"
   },
   "tools": {
     "title": "宝宝工具",

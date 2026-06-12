@@ -4,8 +4,23 @@ import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { getCountryFlag } from '@/lib/utils';
-import { BadgeCheck, MapPin, Shield } from 'lucide-react';
+import { BadgeCheck, MapPin, Shield, Baby, TrendingUp } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
+
+interface ChildItem {
+  id: string;
+  name: string;
+  dob: string;
+  sex: 'GIRL' | 'BOY';
+}
+
+function childAge(dob: string) {
+  const months = Math.floor((Date.now() - new Date(dob).getTime()) / (1000 * 60 * 60 * 24 * 30.44));
+  if (months < 24) return `${Math.max(months, 0)}m`;
+  const y = Math.floor(months / 12);
+  const m = months % 12;
+  return m ? `${y}y ${m}m` : `${y}y`;
+}
 
 interface ProfileUser {
   id: string;
@@ -27,6 +42,7 @@ export function UserProfile({ username }: { username: string }) {
   const [profile, setProfile] = useState<ProfileUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [following, setFollowing] = useState(false);
+  const [children, setChildren] = useState<ChildItem[]>([]);
 
   useEffect(() => {
     fetch(`/api/users/${username}`)
@@ -34,6 +50,15 @@ export function UserProfile({ username }: { username: string }) {
       .then((d) => setProfile(d.user))
       .finally(() => setLoading(false));
   }, [username]);
+
+  // Children are private — only fetched and shown on the user's own profile
+  useEffect(() => {
+    if (!profile || !currentUser || currentUser.id !== profile.id) return;
+    fetch('/api/children')
+      .then((r) => (r.ok ? r.json() : { children: [] }))
+      .then((d) => setChildren(d.children ?? []))
+      .catch(() => {});
+  }, [profile, currentUser]);
 
   async function handleFollow() {
     if (!currentUser || !profile) return;
@@ -143,6 +168,52 @@ export function UserProfile({ username }: { username: string }) {
           ))}
         </div>
       </div>
+
+      {/* Children — own profile only */}
+      {isOwnProfile && children.length > 0 && (
+        <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="flex items-center gap-2 font-serif text-lg text-gray-900 dark:text-gray-100">
+              <Baby size={18} style={{ color: '#C9A84C' }} />
+              {t('profile.myChildren')}
+            </h2>
+            <span className="text-[10px] text-gray-400 border border-gray-200 dark:border-gray-700 rounded-full px-2 py-0.5">
+              {t('profile.visibleOnlyToYou')}
+            </span>
+          </div>
+
+          <div className="space-y-3">
+            {children.map((child) => (
+              <div key={child.id} className="flex items-center gap-3">
+                <div
+                  className="w-10 h-10 rounded-full flex items-center justify-center text-lg flex-shrink-0"
+                  style={{ backgroundColor: child.sex === 'GIRL' ? 'rgba(201,168,76,0.15)' : 'rgba(139,26,43,0.10)' }}
+                >
+                  {child.sex === 'GIRL' ? '👧' : '👦'}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">{child.name}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    {child.sex === 'GIRL' ? t('profile.childGirl') : t('profile.childBoy')} · {childAge(child.dob)}
+                  </p>
+                </div>
+                <p className="text-xs text-gray-400 flex-shrink-0">
+                  {t('profile.childBorn')}{' '}
+                  {new Date(child.dob).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <Link
+            href={{ pathname: '/tools', query: { tool: 'growth' } } as never}
+            className="mt-4 flex items-center justify-center gap-1.5 w-full py-2.5 rounded-xl border border-gray-100 dark:border-gray-800 text-xs font-medium text-brand-crimson hover:bg-brand-crimson/5 transition-colors"
+          >
+            <TrendingUp size={13} />
+            {t('profile.openGrowthChart')}
+          </Link>
+        </div>
+      )}
     </div>
   );
 }

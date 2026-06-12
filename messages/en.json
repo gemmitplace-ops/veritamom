@@ -139,7 +139,13 @@
     },
     "noPostsYet": "No posts yet.",
     "applyForVerification": "Apply for professional verification",
-    "verificationPending": "Verification pending review"
+    "verificationPending": "Verification pending review",
+    "myChildren": "My Children",
+    "childBoy": "Boy",
+    "childGirl": "Girl",
+    "childBorn": "Born",
+    "openGrowthChart": "Open Growth Chart",
+    "visibleOnlyToYou": "Visible only to you"
   },
   "tools": {
     "title": "Baby Tools",

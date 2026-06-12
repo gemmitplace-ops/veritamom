@@ -139,7 +139,13 @@
     },
     "noPostsYet": "아직 게시글이 없습니다.",
     "applyForVerification": "전문가 인증 신청",
-    "verificationPending": "인증 검토 중"
+    "verificationPending": "인증 검토 중",
+    "myChildren": "내 아이들",
+    "childBoy": "남아",
+    "childGirl": "여아",
+    "childBorn": "출생",
+    "openGrowthChart": "성장 차트 열기",
+    "visibleOnlyToYou": "나에게만 표시됨"
   },
   "tools": {
     "title": "베이비 도구",

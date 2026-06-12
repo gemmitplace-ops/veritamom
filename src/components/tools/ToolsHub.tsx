@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { PregnancyTracker } from './PregnancyTracker';
 import { KickCounter } from './KickCounter';
@@ -69,6 +69,14 @@ const COMPONENTS: Record<ToolId, React.ReactNode | null> = {
 export function ToolsHub() {
   const { user } = useAuth();
   const [active, setActive] = useState<ToolId | null>(null);
+
+  // Deep-link support: /tools?tool=growth opens that tool directly.
+  // Read from window instead of useSearchParams to avoid the Suspense
+  // requirement during static rendering.
+  useEffect(() => {
+    const requested = new URLSearchParams(window.location.search).get('tool');
+    if (requested && TOOLS.some((t) => t.id === requested)) setActive(requested as ToolId);
+  }, []);
 
   if (!user) return <ToolsPreview />;
 
