@@ -5,9 +5,9 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
-  typescript: {
-    ignoreBuildErrors: true,
-  },
+  // Type errors fail the build on purpose: a broken import once shipped to
+  // production behind ignoreBuildErrors (see commit 03e344d). A failed build
+  // leaves the old container running, which is the safer failure mode.
   eslint: {
     ignoreDuringBuilds: true,
   },

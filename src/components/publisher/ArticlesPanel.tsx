@@ -5,11 +5,16 @@ import { useAuth } from '@/components/auth/AuthProvider';
 import { PenLine, Plus, Trash2, Eye, EyeOff, CheckCircle, TrendingUp, AlertCircle } from 'lucide-react';
 import { ArticleEditor } from './ArticleEditor';
 
+// Must stay assignable to ArticleEditor's Article — the panel hands articles
+// straight to the editor. /api/admin/articles returns full rows.
 interface Article {
   id: string;
   slug: string;
   title: string;
   hook: string;
+  tldr: string;
+  body: string;
+  metaDescription?: string;
   confidenceLevel: 'ESTABLISHED' | 'EMERGING' | 'DEBATED';
   trimesterRelevance: string;
   isPublished: boolean;
@@ -17,7 +22,10 @@ interface Article {
   publishedAt: string | null;
   viewCount: number;
   author: { name: string };
-  citations: Array<{ paper: { title: string; journalName: string } }>;
+  citations: Array<{
+    paper: { id: string; title: string; citation: string; journalName: string; publishedYear: number };
+    note?: string | null;
+  }>;
 }
 
 const confIcons = {
