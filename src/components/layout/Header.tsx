@@ -61,7 +61,7 @@ export function Header({ locale }: { locale: string }) {
         </div>
 
         {/* Right actions */}
-        <div className="flex items-center gap-1.5 flex-shrink-0">
+        <div className="flex items-center gap-1.5 flex-shrink-0 ml-auto">
           {/* Language switcher */}
           <div className="hidden lg:flex items-center gap-0.5 text-xs mr-1">
             {locales.map((l, i) => (
