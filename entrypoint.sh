@@ -12,10 +12,10 @@ fi
 # - Prisma 7 removed --skip-generate and reads the datasource URL from
 #   prisma.config.ts (not in this image), so the URL is passed explicitly.
 # - Do NOT silence output: if this fails, API routes hit missing tables.
-# Invoke the CLI entry directly: node_modules/.bin/prisma is a symlink that
-# Docker COPY flattens into a plain file, breaking its relative WASM lookup.
+# The CLI lives in its own self-contained install (see Dockerfile): it needs
+# its full dep tree, which the app's pruned node_modules doesn't carry.
 echo "[entrypoint] syncing database schema..."
-node node_modules/prisma/build/index.js db push \
+node prisma-cli/node_modules/prisma/build/index.js db push \
   --schema=/app/schema.prisma \
   --url="${DATABASE_URL:-file:/app/prisma/prod.db}" \
   --accept-data-loss || echo "[entrypoint] WARNING: prisma db push FAILED — database schema may be out of date"

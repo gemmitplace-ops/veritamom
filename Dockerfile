@@ -12,6 +12,13 @@ COPY package*.json ./
 # Install all dependencies
 RUN npm install
 
+# Self-contained Prisma CLI install for the runtime `db push` in entrypoint.sh.
+# The CLI needs its full ~90-package dep tree (effect, c12, studio-core, ...),
+# so cherry-picking packages into the runner doesn't work — this isolated
+# install is copied to the runner wholesale. Version-matched to package.json.
+RUN mkdir /prisma-cli && cd /prisma-cli && npm init -y >/dev/null 2>&1 && \
+    npm install --no-audit --no-fund prisma@$(node -p "require('/app/node_modules/prisma/package.json').version")
+
 # Pass --build-arg CACHEBUST=$(date +%s) to invalidate schema/source from here
 ARG CACHEBUST=1
 COPY prisma ./prisma/
@@ -56,7 +63,7 @@ COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder /app/node_modules/better-sqlite3 ./node_modules/better-sqlite3
 COPY --from=builder /app/node_modules/@prisma/adapter-better-sqlite3 ./node_modules/@prisma/adapter-better-sqlite3
-COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
+COPY --from=builder /prisma-cli/node_modules ./prisma-cli/node_modules
 
 # Copy entrypoint
 COPY entrypoint.sh ./entrypoint.sh
