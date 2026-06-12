@@ -17,6 +17,8 @@ RUN npm install
 RUN npx prisma generate
 
 # Copy source code and public assets
+# Pass --build-arg CACHEBUST=$(date +%s) to invalidate from here
+ARG CACHEBUST=1
 COPY . .
 RUN mkdir -p /app/public
 
