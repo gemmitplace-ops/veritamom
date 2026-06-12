@@ -3,20 +3,39 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "Veritamom",
+    default: "Veritamom — The Gold Standard in Maternal Intelligence",
     template: "%s | Veritamom",
   },
   description:
-    "Evidence-based support for every stage of your motherhood journey. Research, community, and tracking tools — all in one trusted place.",
-  keywords: ["maternal health", "pregnancy", "motherhood", "research", "parenting"],
+    "Evidence-based answers to pregnancy and motherhood questions, backed by peer-reviewed research. Trusted by mothers worldwide.",
+  keywords: [
+    "maternal health", "pregnancy safety", "pregnancy research", "motherhood",
+    "breastfeeding", "postpartum", "trimester guide", "evidence-based pregnancy",
+    "safe medications pregnancy", "pregnancy nutrition",
+  ],
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",
   },
   openGraph: {
-    title: "Veritamom",
-    description: "Evidence-based support for every stage of your motherhood journey.",
+    title: "Veritamom — The Gold Standard in Maternal Intelligence",
+    description: "Evidence-based answers to pregnancy and motherhood questions, backed by peer-reviewed research.",
     type: "website",
+    url: "https://veritamom.com",
+    siteName: "Veritamom",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
+  },
+  alternates: {
+    canonical: "https://veritamom.com",
+    languages: {
+      en: "https://veritamom.com/en",
+      zh: "https://veritamom.com/zh",
+      ko: "https://veritamom.com/ko",
+    },
   },
 };
 

@@ -5,7 +5,7 @@ import { useRouter } from '@/i18n/navigation';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { AppShell } from '@/components/layout/AppShell';
 import { Link } from '@/i18n/navigation';
-import { FileText, Flag, BadgeCheck, Users, Shield } from 'lucide-react';
+import { FileText, Flag, BadgeCheck, Users, Shield, PenLine } from 'lucide-react';
 
 
 const adminSections = [
@@ -21,6 +21,13 @@ const adminSections = [
     icon: FileText,
     title: 'Research Papers',
     description: 'Add, edit and publish research papers shown on the homepage.',
+    color: '#8B1A2B',
+  },
+  {
+    href: '/publisher/articles',
+    icon: PenLine,
+    title: 'Articles',
+    description: 'Write and publish mom-friendly articles backed by academic research.',
     color: '#8B1A2B',
   },
   {
