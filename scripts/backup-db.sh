@@ -48,8 +48,17 @@ find "$BACKUP_DIR" -name 'prod-*.db.gz' -mtime +"$KEEP_DAYS" -delete
 
 echo "[backup] $STAMP OK $(du -h "$BACKUP_DIR/prod-$STAMP.db.gz" | cut -f1) — $(ls "$BACKUP_DIR" | grep -c '^prod-.*\.gz$') backups kept"
 
-# 3. (Optional, recommended) push a copy off-server so a VPS failure can't
-#    take the backups with it. Easiest options:
-#      - rclone to any cloud storage:  rclone copy "$BACKUP_DIR/prod-$STAMP.db.gz" remote:veritamom-backups/
-#      - or scp to another machine you control.
-#    Uncomment and configure one of the above.
+# 3. Off-server copy to Google Drive (haianlabs@gmail.com), so a VPS failure
+#    can't take the backups with it. Remote 'gdrive' uses the drive.file
+#    scope (only sees files rclone created). Remote retention: 30 days.
+REMOTE_KEEP_DAYS=30
+if command -v rclone >/dev/null 2>&1 && rclone listremotes 2>/dev/null | grep -q '^gdrive:'; then
+  if rclone copy "$BACKUP_DIR/prod-$STAMP.db.gz" gdrive:veritamom-backups/ --drive-use-trash=false; then
+    rclone delete gdrive:veritamom-backups/ --min-age "${REMOTE_KEEP_DAYS}d" --drive-use-trash=false 2>/dev/null || true
+    echo "[backup] uploaded to gdrive:veritamom-backups/"
+  else
+    echo "[backup] WARNING: Google Drive upload FAILED — backup is local only"
+  fi
+else
+  echo "[backup] WARNING: rclone gdrive remote not configured — backup is local only"
+fi
