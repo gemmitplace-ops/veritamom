@@ -1,13 +1,12 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Plus, Baby, BarChart2, Table2, Pencil, X, ChevronDown } from 'lucide-react';
+import { Plus, Baby, BarChart2, Table2, Pencil, X, ChevronDown, Trash2, ChevronLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 // ─── WHO Growth Standard Data (0–24 months) ──────────────────────────
 // Source: WHO Child Growth Standards 2006
-// Percentiles: P3, P15, P50, P85, P97
-// Index = age in months (0–24)
+// Index = age in months (0–24), Percentiles: P3, P15, P50, P85, P97
 
 const WHO_GIRLS = {
   weight: {
@@ -58,22 +57,22 @@ const WHO_BOYS = {
 };
 
 type Metric = 'weight' | 'height' | 'head';
-type Sex = 'girl' | 'boy';
 type View = 'chart' | 'table';
+
+interface ChildProfile {
+  id: string;
+  name: string;
+  dob: string;
+  sex: 'GIRL' | 'BOY';
+}
 
 interface GrowthEntry {
   id: string;
-  date: string; // ISO
+  date: string;
   ageMonths: number;
   weight: number | null;
   height: number | null;
   head: number | null;
-}
-
-interface ChildProfile {
-  name: string;
-  dob: string; // YYYY-MM-DD
-  sex: Sex;
 }
 
 const PERCENTILE_COLORS = ['#dc2626','#f97316','#16a34a','#3b82f6','#8b5cf6'];
@@ -81,40 +80,31 @@ const PERCENTILE_LABELS = ['P3','P15','P50','P85','P97'];
 
 // ─── SVG Chart ───────────────────────────────────────────────────────
 
-function GrowthChart({ entries, metric, sex }: { entries: GrowthEntry[]; metric: Metric; sex: Sex }) {
+function GrowthChart({ entries, metric, sex }: { entries: GrowthEntry[]; metric: Metric; sex: 'GIRL' | 'BOY' }) {
   const W = 360; const H = 220;
   const PAD = { top: 16, right: 16, bottom: 32, left: 36 };
-
-  const data = sex === 'girl' ? WHO_GIRLS : WHO_BOYS;
+  const data = sex === 'GIRL' ? WHO_GIRLS : WHO_BOYS;
   const curves = data[metric];
   const months = Array.from({ length: 25 }, (_, i) => i);
-
   const allVals = Object.values(curves).flat();
   const yMin = Math.floor(Math.min(...allVals) * 0.97);
   const yMax = Math.ceil(Math.max(...allVals) * 1.03);
-  const xMin = 0; const xMax = 24;
-
-  function xPx(m: number) { return PAD.left + (m / (xMax - xMin)) * (W - PAD.left - PAD.right); }
+  function xPx(m: number) { return PAD.left + (m / 24) * (W - PAD.left - PAD.right); }
   function yPx(v: number) { return PAD.top + (1 - (v - yMin) / (yMax - yMin)) * (H - PAD.top - PAD.bottom); }
-
   function pctPoints(vals: number[]) {
     return months.map((m) => `${xPx(m).toFixed(1)},${yPx(vals[m]).toFixed(1)}`).join(' ');
   }
-
-  const metricUnit = metric === 'weight' ? 'kg' : 'cm';
   const metricLabel = metric === 'weight' ? 'Weight (kg)' : metric === 'height' ? 'Length/Height (cm)' : 'Head Circ. (cm)';
-
   const validEntries = entries.filter((e) => e[metric] !== null && e.ageMonths >= 0 && e.ageMonths <= 24);
-
-  // Y axis ticks
   const step = metric === 'weight' ? 2 : 10;
   const yTicks: number[] = [];
   for (let v = Math.ceil(yMin / step) * step; v <= yMax; v += step) yTicks.push(v);
 
   return (
     <div>
-      <p className="text-[11px] font-semibold text-gray-500 text-center mb-1">{metricLabel} · WHO 2006 · {sex === 'girl' ? 'Girls' : 'Boys'}</p>
-      {/* Legend */}
+      <p className="text-[11px] font-semibold text-gray-500 text-center mb-1">
+        {metricLabel} · WHO 2006 · {sex === 'GIRL' ? 'Girls' : 'Boys'}
+      </p>
       <div className="flex flex-wrap gap-x-3 gap-y-0.5 justify-center mb-2">
         {PERCENTILE_LABELS.map((label, i) => (
           <span key={label} className="flex items-center gap-1 text-[10px] text-gray-500">
@@ -123,47 +113,27 @@ function GrowthChart({ entries, metric, sex }: { entries: GrowthEntry[]; metric:
           </span>
         ))}
         <span className="flex items-center gap-1 text-[10px] text-gray-600">
-          <span className="inline-block w-2.5 h-2.5 rounded-full bg-brand-crimson" /> Your child
+          <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ backgroundColor: '#8B1A2B' }} /> Your child
         </span>
       </div>
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ maxHeight: 220 }}>
-        {/* Grid lines */}
         {yTicks.map((v) => (
           <g key={v}>
             <line x1={PAD.left} x2={W - PAD.right} y1={yPx(v)} y2={yPx(v)} stroke="#e5e7eb" strokeWidth="0.5" />
             <text x={PAD.left - 3} y={yPx(v) + 3} textAnchor="end" fontSize="8" fill="#9ca3af">{v}</text>
           </g>
         ))}
-        {/* X axis labels */}
         {[0,3,6,9,12,15,18,21,24].map((m) => (
           <text key={m} x={xPx(m)} y={H - 4} textAnchor="middle" fontSize="8" fill="#9ca3af">{m}m</text>
         ))}
-        {/* WHO percentile curves */}
         {([curves.P3, curves.P15, curves.P50, curves.P85, curves.P97] as number[][]).map((vals, i) => (
-          <polyline
-            key={i}
-            points={pctPoints(vals)}
-            fill="none"
-            stroke={PERCENTILE_COLORS[i]}
-            strokeWidth={i === 2 ? 1.5 : 0.8}
-            strokeDasharray={i === 2 ? undefined : i < 2 ? '3,2' : '3,2'}
-            opacity={0.7}
-          />
+          <polyline key={i} points={pctPoints(vals)} fill="none" stroke={PERCENTILE_COLORS[i]}
+            strokeWidth={i === 2 ? 1.5 : 0.8} strokeDasharray={i === 2 ? undefined : '3,2'} opacity={0.7} />
         ))}
-        {/* Child's measurements */}
         {validEntries.map((e) => (
-          <g key={e.id}>
-            <circle
-              cx={xPx(e.ageMonths)}
-              cy={yPx(e[metric] as number)}
-              r={4}
-              fill="#8B1A2B"
-              stroke="white"
-              strokeWidth={1.5}
-            />
-          </g>
+          <circle key={e.id} cx={xPx(e.ageMonths)} cy={yPx(e[metric] as number)}
+            r={4} fill="#8B1A2B" stroke="white" strokeWidth={1.5} />
         ))}
-        {/* Axes */}
         <line x1={PAD.left} x2={PAD.left} y1={PAD.top} y2={H - PAD.bottom} stroke="#d1d5db" strokeWidth="1" />
         <line x1={PAD.left} x2={W - PAD.right} y1={H - PAD.bottom} y2={H - PAD.bottom} stroke="#d1d5db" strokeWidth="1" />
       </svg>
@@ -171,84 +141,206 @@ function GrowthChart({ entries, metric, sex }: { entries: GrowthEntry[]; metric:
   );
 }
 
+// ─── Child Setup Form ─────────────────────────────────────────────────
+
+function ChildForm({ onSave, onCancel, initial }: {
+  onSave: (name: string, dob: string, sex: 'GIRL' | 'BOY') => Promise<void>;
+  onCancel?: () => void;
+  initial?: ChildProfile;
+}) {
+  const [name, setName] = useState(initial?.name ?? '');
+  const [dob, setDob] = useState(initial?.dob ? initial.dob.slice(0, 10) : '');
+  const [sex, setSex] = useState<'GIRL' | 'BOY'>(initial?.sex ?? 'GIRL');
+  const [saving, setSaving] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!name || !dob) return;
+    setSaving(true);
+    await onSave(name, dob, sex);
+    setSaving(false);
+  }
+
+  return (
+    <form onSubmit={submit} className="space-y-5">
+      <h2 className="font-serif text-xl text-brand-crimson">{initial ? 'Edit Child' : 'Add Child'}</h2>
+      <div>
+        <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Name</label>
+        <input value={name} onChange={(e) => setName(e.target.value)} className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-brand-crimson" placeholder="e.g. Mia" />
+      </div>
+      <div>
+        <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Date of Birth</label>
+        <input type="date" value={dob} onChange={(e) => setDob(e.target.value)} className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-brand-crimson" />
+      </div>
+      <div>
+        <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Sex</label>
+        <div className="grid grid-cols-2 gap-3">
+          {(['GIRL','BOY'] as const).map((s) => (
+            <button key={s} type="button" onClick={() => setSex(s)}
+              className={cn('py-3 rounded-xl border text-sm font-medium transition-all',
+                sex === s ? 'border-brand-crimson text-brand-crimson bg-brand-crimson/5' : 'border-gray-200 text-gray-600'
+              )}>
+              {s === 'GIRL' ? '👧 Girl' : '👦 Boy'}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="flex gap-3">
+        <button type="submit" disabled={!name || !dob || saving}
+          className="flex-1 py-3 rounded-xl text-white font-medium text-sm disabled:opacity-50"
+          style={{ backgroundColor: '#8B1A2B' }}>
+          {saving ? 'Saving…' : 'Save'}
+        </button>
+        {onCancel && (
+          <button type="button" onClick={onCancel} className="px-5 py-3 rounded-xl border border-gray-200 text-sm text-gray-600">Cancel</button>
+        )}
+      </div>
+    </form>
+  );
+}
+
+// ─── Child Selector ───────────────────────────────────────────────────
+
+function ChildSelector({ children, selected, onSelect, onAdd }: {
+  children: ChildProfile[];
+  selected: ChildProfile;
+  onSelect: (c: ChildProfile) => void;
+  onAdd: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="relative">
+      <button onClick={() => setOpen(!open)} className="flex items-center gap-1.5 font-serif text-2xl text-brand-crimson">
+        {selected.name} <ChevronDown size={16} />
+      </button>
+      {open && (
+        <div className="absolute left-0 top-full mt-1 w-48 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl py-1 z-20">
+          {children.map((c) => (
+            <button key={c.id} onClick={() => { onSelect(c); setOpen(false); }}
+              className={cn('w-full text-left px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800',
+                c.id === selected.id ? 'font-semibold text-brand-crimson' : 'text-gray-700 dark:text-gray-300'
+              )}>
+              {c.name}
+            </button>
+          ))}
+          <div className="border-t border-gray-100 dark:border-gray-800 mt-1 pt-1">
+            <button onClick={() => { onAdd(); setOpen(false); }}
+              className="w-full text-left px-4 py-2 text-sm text-brand-gold hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center gap-1.5">
+              <Plus size={13} /> Add another child
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Main Component ───────────────────────────────────────────────────
 
 export function GrowthTracker() {
-  const [child, setChild] = useState<ChildProfile | null>(null);
-  const [showSetup, setShowSetup] = useState(false);
+  const [children, setChildren] = useState<ChildProfile[]>([]);
+  const [selectedChild, setSelectedChild] = useState<ChildProfile | null>(null);
   const [entries, setEntries] = useState<GrowthEntry[]>([]);
   const [view, setView] = useState<View>('chart');
   const [metric, setMetric] = useState<Metric>('weight');
   const [showForm, setShowForm] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  // Form state
+  const [showChildForm, setShowChildForm] = useState(false);
+  const [editingChild, setEditingChild] = useState<ChildProfile | null>(null);
+  const [loadingChildren, setLoadingChildren] = useState(true);
   const [formDate, setFormDate] = useState(new Date().toISOString().slice(0, 10));
   const [formWeight, setFormWeight] = useState('');
   const [formHeight, setFormHeight] = useState('');
   const [formHead, setFormHead] = useState('');
-
-  // Setup form
-  const [setupName, setSetupName] = useState('');
-  const [setupDob, setSetupDob] = useState('');
-  const [setupSex, setSetupSex] = useState<Sex>('girl');
+  const [savingEntry, setSavingEntry] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem('vm_growth_child');
-    if (stored) setChild(JSON.parse(stored));
+    fetch('/api/children')
+      .then((r) => r.json())
+      .then((data) => {
+        const list: ChildProfile[] = data.children ?? [];
+        setChildren(list);
+        if (list.length > 0) setSelectedChild(list[0]);
+        setLoadingChildren(false);
+      })
+      .catch(() => setLoadingChildren(false));
   }, []);
 
-  const fetchEntries = useCallback(async () => {
-    const res = await fetch('/api/baby-logs?type=GROWTH');
+  const fetchEntries = useCallback(async (childId: string, dob: string) => {
+    const res = await fetch(`/api/children/${childId}/growth`);
     const data = await res.json();
-    const parsed: GrowthEntry[] = (data.logs || [])
-      .map((log: { id: string; startTime: string; value: string | null }) => {
-        try {
-          const v = JSON.parse(log.value ?? '{}');
-          const dob = child?.dob;
-          const ageMonths = dob
-            ? Math.round((new Date(log.startTime).getTime() - new Date(dob).getTime()) / (1000 * 60 * 60 * 24 * 30.44))
-            : 0;
-          return { id: log.id, date: log.startTime, ageMonths, weight: v.weight ?? null, height: v.height ?? null, head: v.head ?? null };
-        } catch { return null; }
-      })
-      .filter(Boolean)
-      .sort((a: GrowthEntry, b: GrowthEntry) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    const parsed: GrowthEntry[] = (data.logs ?? []).map((log: { id: string; startTime: string; value: string | null }) => {
+      try {
+        const v = JSON.parse(log.value ?? '{}');
+        const ageMonths = Math.round(
+          (new Date(log.startTime).getTime() - new Date(dob).getTime()) / (1000 * 60 * 60 * 24 * 30.44)
+        );
+        return { id: log.id, date: log.startTime, ageMonths, weight: v.weight ?? null, height: v.height ?? null, head: v.head ?? null };
+      } catch { return null; }
+    }).filter(Boolean);
     setEntries(parsed);
-  }, [child]);
+  }, []);
 
   useEffect(() => {
-    if (child) fetchEntries();
-  }, [child, fetchEntries]);
+    if (selectedChild) fetchEntries(selectedChild.id, selectedChild.dob);
+  }, [selectedChild, fetchEntries]);
 
-  function saveChild() {
-    const profile: ChildProfile = { name: setupName, dob: setupDob, sex: setupSex };
-    localStorage.setItem('vm_growth_child', JSON.stringify(profile));
-    setChild(profile);
-    setShowSetup(false);
+  async function addChild(name: string, dob: string, sex: 'GIRL' | 'BOY') {
+    const res = await fetch('/api/children', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, dob, sex }),
+    });
+    const data = await res.json();
+    const child: ChildProfile = data.child;
+    setChildren((prev) => [...prev, child]);
+    setSelectedChild(child);
+    setShowChildForm(false);
+  }
+
+  async function updateChild(name: string, dob: string, sex: 'GIRL' | 'BOY') {
+    if (!editingChild) return;
+    const res = await fetch(`/api/children/${editingChild.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, dob, sex }),
+    });
+    const data = await res.json();
+    const updated: ChildProfile = data.child;
+    setChildren((prev) => prev.map((c) => c.id === updated.id ? updated : c));
+    if (selectedChild?.id === updated.id) setSelectedChild(updated);
+    setEditingChild(null);
   }
 
   async function saveEntry(e: React.FormEvent) {
     e.preventDefault();
-    if (!formWeight && !formHeight && !formHead) return;
-    setLoading(true);
-    const value = JSON.stringify({
-      weight: formWeight ? parseFloat(formWeight) : null,
-      height: formHeight ? parseFloat(formHeight) : null,
-      head: formHead ? parseFloat(formHead) : null,
-    });
-    await fetch('/api/baby-logs', {
+    if (!selectedChild || (!formWeight && !formHeight && !formHead)) return;
+    setSavingEntry(true);
+    await fetch(`/api/children/${selectedChild.id}/growth`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type: 'GROWTH', startTime: new Date(formDate).toISOString(), value }),
+      body: JSON.stringify({
+        date: formDate,
+        weight: formWeight ? parseFloat(formWeight) : null,
+        height: formHeight ? parseFloat(formHeight) : null,
+        head: formHead ? parseFloat(formHead) : null,
+      }),
     });
     setFormWeight(''); setFormHeight(''); setFormHead('');
     setShowForm(false);
-    setLoading(false);
-    fetchEntries();
+    setSavingEntry(false);
+    fetchEntries(selectedChild.id, selectedChild.dob);
   }
 
-  // Group entries by year for table
+  async function deleteEntry(logId: string) {
+    if (!selectedChild) return;
+    await fetch(`/api/children/${selectedChild.id}/growth`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ logId }),
+    });
+    setEntries((prev) => prev.filter((e) => e.id !== logId));
+  }
+
   const byYear: Record<string, GrowthEntry[]> = {};
   for (const e of entries) {
     const yr = new Date(e.date).getFullYear().toString();
@@ -256,83 +348,63 @@ export function GrowthTracker() {
     byYear[yr].push(e);
   }
 
-  // ── No child set up yet ──
-  if (!child && !showSetup) {
-    return (
-      <div className="text-center py-12">
-        <div className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center" style={{ backgroundColor: 'rgba(201,168,76,0.12)', color: '#C9A84C' }}>
-          <Baby size={32} />
-        </div>
-        <h2 className="font-serif text-2xl text-brand-crimson mb-2">Growth Chart</h2>
-        <p className="text-sm text-gray-500 mb-6">Track your child's growth against WHO percentile curves</p>
-        <button
-          onClick={() => setShowSetup(true)}
-          className="px-6 py-3 rounded-full text-white font-medium text-sm"
-          style={{ backgroundColor: '#8B1A2B' }}
-        >
-          Set up child profile
-        </button>
-      </div>
-    );
+  if (loadingChildren) {
+    return <div className="py-16 text-center text-gray-400 text-sm">Loading…</div>;
   }
 
-  // ── Child setup form ──
-  if (showSetup) {
+  if (editingChild) {
+    return <ChildForm onSave={updateChild} onCancel={() => setEditingChild(null)} initial={editingChild} />;
+  }
+
+  if (children.length === 0 || showChildForm) {
     return (
-      <div className="space-y-5">
-        <h2 className="font-serif text-xl text-brand-crimson">Child Profile</h2>
-        <div>
-          <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Name</label>
-          <input value={setupName} onChange={(e) => setSetupName(e.target.value)} className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-brand-crimson" placeholder="e.g. Mia" />
-        </div>
-        <div>
-          <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Date of Birth</label>
-          <input type="date" value={setupDob} onChange={(e) => setSetupDob(e.target.value)} className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-brand-crimson" />
-        </div>
-        <div>
-          <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Sex</label>
-          <div className="grid grid-cols-2 gap-3">
-            {(['girl','boy'] as Sex[]).map((s) => (
-              <button key={s} onClick={() => setSetupSex(s)}
-                className={cn('py-3 rounded-xl border text-sm font-medium transition-all capitalize',
-                  setupSex === s ? 'border-brand-crimson text-brand-crimson bg-brand-crimson/5' : 'border-gray-200 text-gray-600'
-                )}>
-                {s === 'girl' ? '👧 Girl' : '👦 Boy'}
-              </button>
-            ))}
+      <div>
+        {children.length === 0 && (
+          <div className="text-center py-8 mb-6">
+            <div className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center" style={{ backgroundColor: 'rgba(201,168,76,0.12)', color: '#C9A84C' }}>
+              <Baby size={32} />
+            </div>
+            <h2 className="font-serif text-2xl text-brand-crimson mb-2">Growth Chart</h2>
+            <p className="text-sm text-gray-500">Track your child&apos;s growth against WHO percentile curves</p>
           </div>
-        </div>
-        <div className="flex gap-3">
-          <button onClick={saveChild} disabled={!setupName || !setupDob}
-            className="flex-1 py-3 rounded-xl text-white font-medium text-sm disabled:opacity-50"
-            style={{ backgroundColor: '#8B1A2B' }}>
-            Save Profile
+        )}
+        {showChildForm && (
+          <button onClick={() => setShowChildForm(false)} className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-brand-crimson mb-4 transition-colors">
+            <ChevronLeft size={15} /> Back
           </button>
-          {child && <button onClick={() => setShowSetup(false)} className="px-5 py-3 rounded-xl border border-gray-200 text-sm text-gray-600">Cancel</button>}
-        </div>
+        )}
+        <ChildForm onSave={addChild} onCancel={children.length > 0 ? () => setShowChildForm(false) : undefined} />
       </div>
     );
   }
 
-  // ── Main view ──
   return (
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="font-serif text-2xl text-brand-crimson">{child!.name}</h2>
-          <p className="text-xs text-gray-400">
-            Born {new Date(child!.dob).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-            {' · '}{child!.sex === 'girl' ? 'Girl' : 'Boy'}
+          {children.length > 1 ? (
+            <ChildSelector children={children} selected={selectedChild!} onSelect={setSelectedChild} onAdd={() => setShowChildForm(true)} />
+          ) : (
+            <h2 className="font-serif text-2xl text-brand-crimson">{selectedChild!.name}</h2>
+          )}
+          <p className="text-xs text-gray-400 mt-0.5">
+            Born {new Date(selectedChild!.dob).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+            {' · '}{selectedChild!.sex === 'GIRL' ? 'Girl' : 'Boy'}
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <button onClick={() => setShowSetup(true)} className="p-2 rounded-lg text-gray-400 hover:text-brand-crimson transition-colors"><Pencil size={15} /></button>
-          <button
-            onClick={() => setShowForm(!showForm)}
+        <div className="flex items-center gap-1.5">
+          <button onClick={() => setEditingChild(selectedChild)} className="p-2 rounded-lg text-gray-400 hover:text-brand-crimson transition-colors" title="Edit profile">
+            <Pencil size={15} />
+          </button>
+          {children.length === 1 && (
+            <button onClick={() => setShowChildForm(true)} className="p-2 rounded-lg text-gray-400 hover:text-brand-gold transition-colors" title="Add another child">
+              <Baby size={15} />
+            </button>
+          )}
+          <button onClick={() => setShowForm(!showForm)}
             className="flex items-center gap-1.5 px-3 py-2 rounded-full text-white text-xs font-medium"
-            style={{ backgroundColor: '#8B1A2B' }}
-          >
+            style={{ backgroundColor: '#8B1A2B' }}>
             <Plus size={14} /> Add
           </button>
         </div>
@@ -342,7 +414,7 @@ export function GrowthTracker() {
       {showForm && (
         <form onSubmit={saveEntry} className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4 space-y-3">
           <div className="flex items-center justify-between mb-1">
-            <p className="text-sm font-semibold text-gray-700">New Measurement</p>
+            <p className="text-sm font-semibold text-gray-700 dark:text-gray-200">New Measurement</p>
             <button type="button" onClick={() => setShowForm(false)}><X size={16} className="text-gray-400" /></button>
           </div>
           <div>
@@ -363,10 +435,10 @@ export function GrowthTracker() {
               <input type="number" step="0.1" min="0" max="60" value={formHead} onChange={(e) => setFormHead(e.target.value)} placeholder="—" className="w-full border border-gray-200 rounded-lg px-2 py-2 text-sm text-center focus:outline-none focus:border-brand-crimson" />
             </div>
           </div>
-          <button type="submit" disabled={loading || (!formWeight && !formHeight && !formHead)}
+          <button type="submit" disabled={savingEntry || (!formWeight && !formHeight && !formHead)}
             className="w-full py-2.5 rounded-xl text-white text-sm font-medium disabled:opacity-50"
             style={{ backgroundColor: '#8B1A2B' }}>
-            {loading ? 'Saving…' : 'Save Measurement'}
+            {savingEntry ? 'Saving…' : 'Save Measurement'}
           </button>
         </form>
       )}
@@ -392,11 +464,10 @@ export function GrowthTracker() {
         </div>
       ) : view === 'chart' ? (
         <div className="space-y-3">
-          {/* Metric tabs */}
           <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
             {(['weight','height','head'] as Metric[]).map((m) => (
               <button key={m} onClick={() => setMetric(m)}
-                className={cn('flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-all capitalize',
+                className={cn('flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-all',
                   metric === m ? 'text-white border-transparent' : 'bg-white text-gray-600 border-gray-200'
                 )}
                 style={metric === m ? { backgroundColor: '#C9A84C' } : {}}>
@@ -405,37 +476,32 @@ export function GrowthTracker() {
             ))}
           </div>
 
-          {/* Chart */}
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
-            <GrowthChart entries={entries} metric={metric} sex={child!.sex} />
+            <GrowthChart entries={entries} metric={metric} sex={selectedChild!.sex} />
           </div>
 
-          {/* Latest values */}
-          {entries.length > 0 && (
-            <div className="grid grid-cols-3 gap-2">
-              {([
-                { key: 'weight', label: 'Weight', unit: 'kg' },
-                { key: 'height', label: 'Height', unit: 'cm' },
-                { key: 'head', label: 'Head', unit: 'cm' },
-              ] as { key: Metric; label: string; unit: string }[]).map(({ key, label, unit }) => {
-                const latest = [...entries].reverse().find((e) => e[key] !== null);
-                return (
-                  <div key={key} className="bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-3 text-center">
-                    <p className="text-lg font-bold" style={{ color: '#8B1A2B' }}>
-                      {latest?.[key] ?? '—'}<span className="text-xs font-normal text-gray-400">{latest?.[key] ? unit : ''}</span>
-                    </p>
-                    <p className="text-[10px] text-gray-400">{label}</p>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+          <div className="grid grid-cols-3 gap-2">
+            {([
+              { key: 'weight' as Metric, label: 'Weight', unit: 'kg' },
+              { key: 'height' as Metric, label: 'Height', unit: 'cm' },
+              { key: 'head' as Metric, label: 'Head', unit: 'cm' },
+            ]).map(({ key, label, unit }) => {
+              const latest = [...entries].reverse().find((e) => e[key] !== null);
+              return (
+                <div key={key} className="bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 p-3 text-center">
+                  <p className="text-lg font-bold" style={{ color: '#8B1A2B' }}>
+                    {latest?.[key] ?? '—'}<span className="text-xs font-normal text-gray-400">{latest?.[key] != null ? ` ${unit}` : ''}</span>
+                  </p>
+                  <p className="text-[10px] text-gray-400">{label}</p>
+                </div>
+              );
+            })}
+          </div>
         </div>
       ) : (
-        // Table view
         <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
-          <div className="grid grid-cols-4 px-4 py-2 border-b border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50">
-            {['Date','Weight','Height','Head'].map((h) => (
+          <div className="grid grid-cols-5 px-4 py-2 border-b border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50">
+            {['Date','Age','Weight','Height','Head'].map((h) => (
               <p key={h} className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">{h}</p>
             ))}
           </div>
@@ -443,11 +509,17 @@ export function GrowthTracker() {
             <div key={year}>
               <p className="px-4 py-1.5 text-[11px] font-bold text-gray-400 bg-gray-50/70 dark:bg-gray-800/30">{year}</p>
               {yearEntries.map((e) => (
-                <div key={e.id} className="grid grid-cols-4 px-4 py-2.5 border-t border-gray-50 dark:border-gray-800/50">
+                <div key={e.id} className="group grid grid-cols-5 px-4 py-2.5 border-t border-gray-50 dark:border-gray-800/50 items-center">
                   <p className="text-xs text-gray-500">{new Date(e.date).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</p>
-                  <p className="text-xs font-medium text-gray-800 dark:text-gray-200">{e.weight != null ? `${e.weight} kg` : '—'}</p>
-                  <p className="text-xs font-medium text-gray-800 dark:text-gray-200">{e.height != null ? `${e.height} cm` : '—'}</p>
-                  <p className="text-xs font-medium text-gray-800 dark:text-gray-200">{e.head != null ? `${e.head} cm` : '—'}</p>
+                  <p className="text-xs text-gray-400">{e.ageMonths}m</p>
+                  <p className="text-xs font-medium text-gray-800 dark:text-gray-200">{e.weight != null ? `${e.weight}kg` : '—'}</p>
+                  <p className="text-xs font-medium text-gray-800 dark:text-gray-200">{e.height != null ? `${e.height}cm` : '—'}</p>
+                  <div className="flex items-center gap-1">
+                    <p className="text-xs font-medium text-gray-800 dark:text-gray-200 flex-1">{e.head != null ? `${e.head}cm` : '—'}</p>
+                    <button type="button" onClick={() => deleteEntry(e.id)} className="opacity-0 group-hover:opacity-100 p-1 text-gray-400 hover:text-red-500 transition-all">
+                      <Trash2 size={12} />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -455,8 +527,9 @@ export function GrowthTracker() {
         </div>
       )}
 
-      {/* WHO note */}
-      <p className="text-[10px] text-gray-400 text-center">Charts based on WHO Child Growth Standards 2006 · Always discuss measurements with your pediatrician</p>
+      <p className="text-[10px] text-gray-400 text-center">
+        Charts based on WHO Child Growth Standards 2006 · Always discuss measurements with your pediatrician
+      </p>
     </div>
   );
 }

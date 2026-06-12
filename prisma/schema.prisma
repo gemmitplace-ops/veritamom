@@ -35,6 +35,7 @@ model User {
   conversations ConversationMember[]
   notifications Notification[]
   babyLogs      BabyLog[]
+  children      Child[]
   flagReports   FlagReport[]
   paperLikes    PaperLike[]
   paperSaves    PaperSave[]
@@ -165,9 +166,23 @@ model Notification {
   user User @relation(fields: [userId], references: [id])
 }
 
+model Child {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  dob       DateTime
+  sex       ChildSex
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id])
+  babyLogs BabyLog[]
+}
+
 model BabyLog {
   id        String      @id @default(cuid())
   userId    String
+  childId   String?
   type      BabyLogType
   startTime DateTime
   endTime   DateTime?
@@ -175,7 +190,8 @@ model BabyLog {
   value     String?
   createdAt DateTime    @default(now())
 
-  user User @relation(fields: [userId], references: [id])
+  user  User   @relation(fields: [userId], references: [id])
+  child Child? @relation(fields: [childId], references: [id])
 }
 
 model MilestoneWeek {
@@ -343,4 +359,9 @@ enum ConfidenceLevel {
   ESTABLISHED
   EMERGING
   DEBATED
+}
+
+enum ChildSex {
+  GIRL
+  BOY
 }

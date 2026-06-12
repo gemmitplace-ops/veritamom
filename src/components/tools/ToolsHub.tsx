@@ -38,11 +38,11 @@ const TOOLS: ToolDef[] = [
   { id: 'contractions', label: 'Contraction\nTimer',   icon: <Timer size={26} />,        color: '#8B1A2B', bg: 'rgba(139,26,43,0.10)',  section: 'pregnancy', forStatuses: ['PREGNANT'] },
   { id: 'symptoms',     label: 'Symptom\nLog',         icon: <ClipboardList size={26} />,color: '#7c3aed', bg: 'rgba(124,58,237,0.10)', section: 'pregnancy', forStatuses: ['PREGNANT', 'TRYING', 'PARENT', 'PROFESSIONAL'] },
   // Newborn / Baby section
-  { id: 'milestones',   label: 'Milestone\nTracker',   icon: <Star size={26} />,         color: '#C9A84C', bg: 'rgba(201,168,76,0.12)',  section: 'newborn', forStatuses: ['PARENT'] },
-  { id: 'feeding',      label: 'Feeding\nLog',         icon: <Droplets size={26} />,     color: '#2d7a4f', bg: 'rgba(45,122,79,0.10)',   section: 'newborn', forStatuses: ['PARENT'] },
-  { id: 'sleep',        label: 'Sleep\nLog',           icon: <Moon size={26} />,         color: '#7c3aed', bg: 'rgba(124,58,237,0.10)', section: 'newborn', forStatuses: ['PARENT'] },
-  { id: 'diaper',       label: 'Diaper\nLog',          icon: <Trash2 size={26} />,       color: '#b45309', bg: 'rgba(180,83,9,0.10)',    section: 'newborn', forStatuses: ['PARENT'] },
-  { id: 'growth',       label: 'Growth\nChart',         icon: <TrendingUp size={26} />,   color: '#8B1A2B', bg: 'rgba(139,26,43,0.10)',  section: 'newborn', forStatuses: ['PARENT'] },
+  { id: 'milestones',   label: 'Milestone\nTracker',   icon: <Star size={26} />,         color: '#C9A84C', bg: 'rgba(201,168,76,0.12)',  section: 'newborn', forStatuses: ['PARENT', 'PREGNANT', 'TRYING', 'PROFESSIONAL'] },
+  { id: 'feeding',      label: 'Feeding\nLog',         icon: <Droplets size={26} />,     color: '#2d7a4f', bg: 'rgba(45,122,79,0.10)',   section: 'newborn', forStatuses: ['PARENT', 'PREGNANT', 'TRYING', 'PROFESSIONAL'] },
+  { id: 'sleep',        label: 'Sleep\nLog',           icon: <Moon size={26} />,         color: '#7c3aed', bg: 'rgba(124,58,237,0.10)', section: 'newborn', forStatuses: ['PARENT', 'PREGNANT', 'TRYING', 'PROFESSIONAL'] },
+  { id: 'diaper',       label: 'Diaper\nLog',          icon: <Trash2 size={26} />,       color: '#b45309', bg: 'rgba(180,83,9,0.10)',    section: 'newborn', forStatuses: ['PARENT', 'PREGNANT', 'TRYING', 'PROFESSIONAL'] },
+  { id: 'growth',       label: 'Growth\nChart',        icon: <TrendingUp size={26} />,   color: '#8B1A2B', bg: 'rgba(139,26,43,0.10)',  section: 'newborn', forStatuses: ['PARENT', 'PREGNANT', 'TRYING', 'PROFESSIONAL'] },
   // General
   { id: 'summary',      label: 'Daily\nSummary',       icon: <BookOpen size={26} />,     color: '#4b5563', bg: 'rgba(75,85,99,0.10)',    section: 'general', forStatuses: ['PREGNANT', 'PARENT', 'TRYING', 'PROFESSIONAL'] },
 ];
