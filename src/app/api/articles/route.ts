@@ -18,36 +18,40 @@ const articleSchema = z.object({
 });
 
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const trimester = searchParams.get('trimester');
-  const featured = searchParams.get('featured') === 'true';
-  const page = parseInt(searchParams.get('page') || '1');
-  const limit = parseInt(searchParams.get('limit') || '10');
-  const skip = (page - 1) * limit;
+  try {
+    const { searchParams } = new URL(request.url);
+    const trimester = searchParams.get('trimester');
+    const featured = searchParams.get('featured') === 'true';
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '10');
+    const skip = (page - 1) * limit;
 
-  const where: Record<string, unknown> = { isPublished: true };
-  if (trimester && trimester !== 'ALL') where.trimesterRelevance = { contains: trimester };
-  if (featured) where.isFeatured = true;
+    const where: Record<string, unknown> = { isPublished: true };
+    if (trimester && trimester !== 'ALL') where.trimesterRelevance = { contains: trimester };
+    if (featured) where.isFeatured = true;
 
-  const [articles, total] = await Promise.all([
-    prisma.article.findMany({
-      where,
-      skip,
-      take: limit,
-      orderBy: [{ isFeatured: 'desc' }, { publishedAt: 'desc' }],
-      include: {
-        author: { select: { name: true, username: true } },
-        citations: {
-          include: {
-            paper: { select: { id: true, title: true, journalName: true, publishedYear: true, citation: true } },
+    const [articles, total] = await Promise.all([
+      prisma.article.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: [{ isFeatured: 'desc' }, { publishedAt: 'desc' }],
+        include: {
+          author: { select: { name: true, username: true } },
+          citations: {
+            include: {
+              paper: { select: { id: true, title: true, journalName: true, publishedYear: true, citation: true } },
+            },
           },
         },
-      },
-    }),
-    prisma.article.count({ where }),
-  ]);
+      }),
+      prisma.article.count({ where }),
+    ]);
 
-  return NextResponse.json({ articles, total, page, limit });
+    return NextResponse.json({ articles, total, page, limit });
+  } catch {
+    return NextResponse.json({ articles: [], total: 0, page: 1, limit: 10 });
+  }
 }
 
 export async function POST(request: NextRequest) {

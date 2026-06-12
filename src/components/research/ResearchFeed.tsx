@@ -60,13 +60,13 @@ export function ResearchFeed({ locale }: { locale: string }) {
   useEffect(() => {
     setLoading(true);
     const trimesterParam = trimester !== 'ALL' ? `&trimester=${trimester}` : '';
-    Promise.all([
+    Promise.allSettled([
       fetch(`/api/papers?trimester=${trimester}`).then((r) => r.json()),
       fetch(`/api/articles?limit=5${trimesterParam}`).then((r) => r.json()),
     ])
-      .then(([paperData, articleData]) => {
-        setPapers(paperData.papers || []);
-        setArticles(articleData.articles || []);
+      .then(([paperResult, articleResult]) => {
+        if (paperResult.status === 'fulfilled') setPapers(paperResult.value.papers || []);
+        if (articleResult.status === 'fulfilled') setArticles(articleResult.value.articles || []);
       })
       .finally(() => setLoading(false));
   }, [trimester]);
