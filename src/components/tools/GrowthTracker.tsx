@@ -56,8 +56,48 @@ const WHO_BOYS = {
   },
 };
 
+// ─── CDC Growth Charts 2000 (2–20 years) ────────────────────────────
+// Source: CDC LMS data files (wtage.csv / statage.csv), percentiles computed
+// from L/M/S at 6-month steps, ages 24–240 months. No head-circ reference
+// exists for this age range. Index = (ageMonths - 24) / 6.
+
+const CDC_GIRLS = {
+  weight: {
+    P3:  [10.0,10.7,11.3,12.0,12.7,13.5,14.3,15.1,15.9,16.8,17.7,18.5,19.5,20.4,21.5,22.6,23.9,25.2,26.7,28.2,29.9,31.6,33.3,34.9,36.6,38.1,39.5,40.7,41.7,42.6,43.3,43.8,44.2,44.5,44.8,45.0,45.0],
+    P15: [10.8,11.6,12.3,13.1,13.9,14.8,15.7,16.6,17.6,18.6,19.6,20.7,21.8,23.0,24.3,25.7,27.3,28.9,30.7,32.5,34.3,36.2,38.0,39.7,41.3,42.8,44.1,45.3,46.2,47.0,47.6,48.2,48.6,49.0,49.4,49.7,49.9],
+    P50: [12.1,13.0,13.9,14.8,15.8,16.8,17.9,19.1,20.2,21.5,22.8,24.1,25.6,27.2,29.0,30.9,32.9,35.0,37.2,39.4,41.6,43.8,45.8,47.7,49.4,50.8,52.0,53.1,53.9,54.6,55.1,55.7,56.2,56.7,57.3,57.8,58.2],
+    P85: [13.5,14.7,15.8,17.0,18.3,19.7,21.1,22.5,24.1,25.7,27.4,29.2,31.3,33.5,35.8,38.4,41.1,43.9,46.8,49.6,52.4,55.0,57.5,59.7,61.5,63.1,64.4,65.4,66.2,66.8,67.4,67.9,68.5,69.2,69.9,70.6,71.1],
+    P97: [15.0,16.4,17.9,19.5,21.1,22.9,24.8,26.7,28.7,30.9,33.2,35.6,38.3,41.2,44.3,47.6,51.1,54.7,58.4,62.1,65.6,69.0,72.1,75.0,77.5,79.7,81.5,83.0,84.3,85.3,86.1,86.8,87.4,87.9,88.4,88.8,89.0],
+  },
+  height: {
+    P3:  [78.4,82.9,86.6,89.8,92.8,95.9,99.1,102.3,105.5,108.6,111.6,114.4,117.1,119.5,121.7,123.7,125.8,128.0,130.5,133.6,137.1,140.8,144.0,146.4,148.0,149.0,149.7,150.1,150.4,150.6,150.7,150.8,150.9,151.0,151.0,151.1,151.1],
+    P15: [81.4,86.1,89.9,93.1,96.3,99.5,102.8,106.2,109.5,112.8,115.9,118.9,121.7,124.2,126.6,128.9,131.2,133.6,136.5,139.8,143.5,147.0,149.9,152.1,153.6,154.5,155.1,155.6,155.8,156.1,156.2,156.3,156.4,156.5,156.5,156.6,156.6],
+    P50: [85.0,90.0,93.9,97.4,100.8,104.2,107.7,111.2,114.7,118.2,121.5,124.6,127.6,130.3,132.9,135.4,138.0,140.8,144.0,147.5,151.2,154.5,157.2,159.1,160.4,161.3,161.9,162.3,162.5,162.8,162.9,163.0,163.1,163.2,163.3,163.3,163.3],
+    P85: [88.6,93.9,98.1,101.7,105.3,109.0,112.7,116.5,120.2,123.9,127.4,130.7,133.8,136.7,139.5,142.2,145.1,148.2,151.6,155.2,158.8,161.9,164.3,166.0,167.2,168.0,168.6,169.0,169.3,169.5,169.6,169.7,169.8,169.9,170.0,170.0,170.0],
+    P97: [91.5,97.1,101.5,105.4,109.2,113.1,117.0,121.0,124.9,128.8,132.4,135.9,139.1,142.2,145.1,148.0,151.0,154.3,157.8,161.5,164.9,167.8,170.0,171.7,172.8,173.6,174.1,174.5,174.8,174.9,175.1,175.2,175.3,175.3,175.4,175.4,175.5],
+  },
+};
+
+const CDC_BOYS = {
+  weight: {
+    P3:  [10.4,11.1,11.8,12.5,13.2,14.0,14.8,15.6,16.4,17.3,18.2,19.1,20.0,21.0,22.0,23.0,24.1,25.2,26.5,27.8,29.3,31.0,32.8,34.8,36.9,39.1,41.3,43.5,45.6,47.5,49.2,50.5,51.6,52.5,53.2,53.7,54.0],
+    P15: [11.3,12.1,12.8,13.6,14.4,15.3,16.2,17.1,18.1,19.1,20.1,21.1,22.2,23.3,24.5,25.7,27.0,28.5,30.0,31.7,33.5,35.5,37.7,40.0,42.3,44.7,47.1,49.4,51.5,53.4,55.1,56.5,57.6,58.5,59.3,60.0,60.4],
+    P50: [12.7,13.5,14.3,15.2,16.2,17.3,18.4,19.5,20.7,21.9,23.1,24.3,25.6,27.0,28.6,30.2,31.9,33.8,35.9,38.1,40.5,43.0,45.6,48.3,51.0,53.7,56.3,58.7,60.9,62.9,64.6,66.0,67.2,68.2,69.1,69.9,70.6],
+    P85: [14.2,15.1,16.2,17.3,18.5,19.8,21.2,22.7,24.2,25.7,27.3,29.0,30.8,32.7,34.7,37.0,39.4,42.0,44.7,47.6,50.6,53.7,56.8,59.9,63.0,66.0,68.9,71.5,73.9,76.1,77.9,79.5,80.9,82.0,82.9,83.8,84.7],
+    P97: [15.6,16.7,17.9,19.3,20.9,22.5,24.3,26.2,28.1,30.2,32.3,34.7,37.2,39.9,42.8,45.9,49.1,52.5,56.0,59.5,63.0,66.5,70.0,73.4,76.7,79.9,83.0,85.9,88.7,91.3,93.6,95.6,97.1,98.3,99.1,99.8,100.8],
+  },
+  height: {
+    P3:  [79.9,84.2,88.1,91.3,94.3,97.2,100.1,103.0,105.9,108.8,111.7,114.6,117.3,119.8,122.2,124.4,126.5,128.5,130.6,132.9,135.4,138.3,141.5,144.8,148.2,151.5,154.4,156.8,158.7,160.1,161.2,161.9,162.5,162.8,163.1,163.2,163.3],
+    P15: [82.8,87.2,91.1,94.6,97.9,101.0,104.1,107.1,110.2,113.2,116.2,119.1,122.0,124.7,127.2,129.6,131.9,134.1,136.3,138.8,141.5,144.5,148.0,151.7,155.4,158.7,161.6,163.8,165.5,166.8,167.6,168.2,168.7,169.0,169.2,169.3,169.4],
+    P50: [86.5,91.0,95.0,98.7,102.2,105.6,108.9,112.2,115.4,118.6,121.8,124.9,127.9,130.8,133.5,136.1,138.6,141.1,143.5,146.1,149.1,152.4,156.1,160.0,163.8,167.2,169.9,172.0,173.5,174.6,175.3,175.8,176.2,176.4,176.6,176.7,176.8],
+    P85: [90.1,94.9,99.1,102.9,106.6,110.2,113.7,117.1,120.6,124.0,127.4,130.7,133.9,137.0,140.0,142.8,145.5,148.2,150.9,153.7,156.9,160.4,164.3,168.3,172.0,175.3,177.8,179.7,181.1,182.0,182.7,183.2,183.5,183.8,184.0,184.1,184.2],
+    P97: [93.0,98.2,102.6,106.5,110.2,113.9,117.5,121.2,124.8,128.4,132.0,135.6,139.0,142.3,145.4,148.4,151.3,154.1,157.0,160.1,163.4,167.1,171.0,174.9,178.5,181.6,184.0,185.7,187.0,187.9,188.6,189.1,189.4,189.7,189.9,190.1,190.2],
+  },
+};
+
 type Metric = 'weight' | 'height' | 'head';
 type View = 'chart' | 'table';
+type Band = 'infant' | 'child'; // infant: WHO 0–24m · child: CDC 2–20y
 
 interface ChildProfile {
   id: string;
@@ -80,30 +120,41 @@ const PERCENTILE_LABELS = ['P3','P15','P50','P85','P97'];
 
 // ─── SVG Chart ───────────────────────────────────────────────────────
 
-function GrowthChart({ entries, metric, sex }: { entries: GrowthEntry[]; metric: Metric; sex: 'GIRL' | 'BOY' }) {
+function GrowthChart({ entries, metric, sex, band }: { entries: GrowthEntry[]; metric: Metric; sex: 'GIRL' | 'BOY'; band: Band }) {
   const W = 360; const H = 220;
   const PAD = { top: 16, right: 16, bottom: 32, left: 36 };
-  const data = sex === 'GIRL' ? WHO_GIRLS : WHO_BOYS;
-  const curves = data[metric];
-  const months = Array.from({ length: 25 }, (_, i) => i);
+  const isChild = band === 'child';
+  const data = isChild
+    ? (sex === 'GIRL' ? CDC_GIRLS : CDC_BOYS)
+    : (sex === 'GIRL' ? WHO_GIRLS : WHO_BOYS);
+  const curves = (data as Record<string, Record<string, number[]>>)[metric];
+  const xMin = isChild ? 24 : 0;
+  const xMax = isChild ? 240 : 24;
+  const agePoints = isChild
+    ? Array.from({ length: 37 }, (_, i) => 24 + i * 6)
+    : Array.from({ length: 25 }, (_, i) => i);
   const allVals = Object.values(curves).flat();
   const yMin = Math.floor(Math.min(...allVals) * 0.97);
   const yMax = Math.ceil(Math.max(...allVals) * 1.03);
-  function xPx(m: number) { return PAD.left + (m / 24) * (W - PAD.left - PAD.right); }
+  function xPx(m: number) { return PAD.left + ((m - xMin) / (xMax - xMin)) * (W - PAD.left - PAD.right); }
   function yPx(v: number) { return PAD.top + (1 - (v - yMin) / (yMax - yMin)) * (H - PAD.top - PAD.bottom); }
   function pctPoints(vals: number[]) {
-    return months.map((m) => `${xPx(m).toFixed(1)},${yPx(vals[m]).toFixed(1)}`).join(' ');
+    return agePoints.map((m, i) => `${xPx(m).toFixed(1)},${yPx(vals[i]).toFixed(1)}`).join(' ');
   }
   const metricLabel = metric === 'weight' ? 'Weight (kg)' : metric === 'height' ? 'Length/Height (cm)' : 'Head Circ. (cm)';
-  const validEntries = entries.filter((e) => e[metric] !== null && e.ageMonths >= 0 && e.ageMonths <= 24);
-  const step = metric === 'weight' ? 2 : 10;
+  const validEntries = entries.filter((e) => e[metric] !== null && e.ageMonths >= xMin && e.ageMonths <= xMax);
+  const span = yMax - yMin;
+  const step = [1, 2, 5, 10, 20, 25].find((s) => span / s <= 8) ?? 50;
   const yTicks: number[] = [];
   for (let v = Math.ceil(yMin / step) * step; v <= yMax; v += step) yTicks.push(v);
+  const xTicks = isChild
+    ? Array.from({ length: 10 }, (_, i) => 24 + i * 24) // 2y..20y
+    : [0, 3, 6, 9, 12, 15, 18, 21, 24];
 
   return (
     <div>
       <p className="text-[11px] font-semibold text-gray-500 text-center mb-1">
-        {metricLabel} · WHO 2006 · {sex === 'GIRL' ? 'Girls' : 'Boys'}
+        {metricLabel} · {isChild ? 'CDC 2000' : 'WHO 2006'} · {sex === 'GIRL' ? 'Girls' : 'Boys'}
       </p>
       <div className="flex flex-wrap gap-x-3 gap-y-0.5 justify-center mb-2">
         {PERCENTILE_LABELS.map((label, i) => (
@@ -123,8 +174,10 @@ function GrowthChart({ entries, metric, sex }: { entries: GrowthEntry[]; metric:
             <text x={PAD.left - 3} y={yPx(v) + 3} textAnchor="end" fontSize="8" fill="#9ca3af">{v}</text>
           </g>
         ))}
-        {[0,3,6,9,12,15,18,21,24].map((m) => (
-          <text key={m} x={xPx(m)} y={H - 4} textAnchor="middle" fontSize="8" fill="#9ca3af">{m}m</text>
+        {xTicks.map((m) => (
+          <text key={m} x={xPx(m)} y={H - 4} textAnchor="middle" fontSize="8" fill="#9ca3af">
+            {isChild ? `${m / 12}y` : `${m}m`}
+          </text>
         ))}
         {([curves.P3, curves.P15, curves.P50, curves.P85, curves.P97] as number[][]).map((vals, i) => (
           <polyline key={i} points={pctPoints(vals)} fill="none" stroke={PERCENTILE_COLORS[i]}
@@ -361,6 +414,16 @@ export function GrowthTracker() {
     setEntries((prev) => prev.filter((e) => e.id !== logId));
   }
 
+  // Pick the reference band from the child's current age: WHO standards cover
+  // 0-24 months, CDC charts cover 2-20 years. Head circumference has no
+  // reference data beyond infancy, so that tab is hidden in the child band.
+  const ageNowMonths = selectedChild
+    ? (Date.now() - new Date(selectedChild.dob).getTime()) / (1000 * 60 * 60 * 24 * 30.44)
+    : 0;
+  const band: Band = ageNowMonths > 24 ? 'child' : 'infant';
+  const availableMetrics: Metric[] = band === 'child' ? ['weight', 'height'] : ['weight', 'height', 'head'];
+  const activeMetric: Metric = availableMetrics.includes(metric) ? metric : 'weight';
+
   const byYear: Record<string, GrowthEntry[]> = {};
   for (const e of entries) {
     const yr = new Date(e.date).getFullYear().toString();
@@ -488,19 +551,19 @@ export function GrowthTracker() {
       ) : view === 'chart' ? (
         <div className="space-y-3">
           <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-            {(['weight','height','head'] as Metric[]).map((m) => (
+            {availableMetrics.map((m) => (
               <button key={m} onClick={() => setMetric(m)}
                 className={cn('flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-all',
-                  metric === m ? 'text-white border-transparent' : 'bg-white text-gray-600 border-gray-200'
+                  activeMetric === m ? 'text-white border-transparent' : 'bg-white text-gray-600 border-gray-200'
                 )}
-                style={metric === m ? { backgroundColor: '#C9A84C' } : {}}>
+                style={activeMetric === m ? { backgroundColor: '#C9A84C' } : {}}>
                 {m === 'head' ? 'Head Circ.' : m.charAt(0).toUpperCase() + m.slice(1)}
               </button>
             ))}
           </div>
 
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
-            <GrowthChart entries={entries} metric={metric} sex={selectedChild!.sex} />
+            <GrowthChart entries={entries} metric={activeMetric} sex={selectedChild!.sex} band={band} />
           </div>
 
           <div className="grid grid-cols-3 gap-2">
@@ -551,7 +614,7 @@ export function GrowthTracker() {
       )}
 
       <p className="text-[10px] text-gray-400 text-center">
-        Charts based on WHO Child Growth Standards 2006 · Always discuss measurements with your pediatrician
+        Charts based on WHO Child Growth Standards 2006 (birth–2y) and CDC Growth Charts 2000 (2–20y) · Always discuss measurements with your pediatrician
       </p>
     </div>
   );
