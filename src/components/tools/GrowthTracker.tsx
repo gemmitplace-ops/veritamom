@@ -116,7 +116,7 @@ interface GrowthEntry {
 }
 
 const PERCENTILE_COLORS = ['#dc2626','#f97316','#16a34a','#3b82f6','#8b5cf6'];
-const PERCENTILE_LABELS = ['P3','P15','P50','P85','P97'];
+const PERCENTILE_LABELS = ['3%','15%','50%','85%','97%'];
 
 // ─── SVG Chart ───────────────────────────────────────────────────────
 
