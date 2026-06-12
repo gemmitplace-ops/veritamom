@@ -92,7 +92,7 @@ export function Header({ locale }: { locale: string }) {
               </Link>
               <Link
                 href="/notifications"
-                className="p-2 rounded-lg text-gray-500 hover:text-brand-crimson hover:bg-white dark:hover:bg-gray-800 transition-colors min-h-[44px] min-w-[44px] hidden md:flex items-center justify-center"
+                className="p-2 rounded-lg text-gray-500 hover:text-brand-crimson hover:bg-white dark:hover:bg-gray-800 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
               >
                 <Bell size={18} />
               </Link>
