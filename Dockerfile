@@ -8,17 +8,18 @@ RUN apk add --no-cache python3 make g++
 
 # Copy package files
 COPY package*.json ./
-COPY prisma ./prisma/
 
 # Install all dependencies
 RUN npm install
+
+# Pass --build-arg CACHEBUST=$(date +%s) to invalidate schema/source from here
+ARG CACHEBUST=1
+COPY prisma ./prisma/
 
 # Generate Prisma client
 RUN npx prisma generate
 
 # Copy source code and public assets
-# Pass --build-arg CACHEBUST=$(date +%s) to invalidate from here
-ARG CACHEBUST=1
 COPY . .
 RUN mkdir -p /app/public
 
