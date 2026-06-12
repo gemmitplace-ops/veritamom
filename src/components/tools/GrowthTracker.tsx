@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Plus, Baby, BarChart2, Table2, Pencil, X, ChevronDown, Trash2, ChevronLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -117,10 +117,39 @@ interface GrowthEntry {
 
 const PERCENTILE_COLORS = ['#dc2626','#f97316','#16a34a','#3b82f6','#8b5cf6'];
 const PERCENTILE_LABELS = ['3%','15%','50%','85%','97%'];
+// z-scores of the five reference curves, for interpolating a child's own
+// percentile track between them
+const PERCENTILE_Z = [-1.880794, -1.036433, 0, 1.036433, 1.880794];
+const Z_CLAMP = 2.326; // ≈ 1st/99th percentile
+
+// Standard normal CDF (Zelen & Severo approximation)
+function phi(z: number) {
+  const t = 1 / (1 + 0.2316419 * Math.abs(z));
+  const d = 0.3989423 * Math.exp(-z * z / 2);
+  const p = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));
+  return z > 0 ? 1 - p : p;
+}
+
+// Where does value v sit between the five percentile curves? Piecewise-linear
+// in z space, extrapolated past the outer curves and clamped.
+function zFromValue(curveVals: number[], v: number) {
+  let i = 1;
+  while (i < curveVals.length - 1 && v > curveVals[i]) i++;
+  const z = PERCENTILE_Z[i - 1] +
+    ((v - curveVals[i - 1]) / (curveVals[i] - curveVals[i - 1])) * (PERCENTILE_Z[i] - PERCENTILE_Z[i - 1]);
+  return Math.max(-Z_CLAMP, Math.min(Z_CLAMP, z));
+}
+
+function valueFromZ(curveVals: number[], z: number) {
+  let i = 1;
+  while (i < PERCENTILE_Z.length - 1 && z > PERCENTILE_Z[i]) i++;
+  return curveVals[i - 1] +
+    ((z - PERCENTILE_Z[i - 1]) / (PERCENTILE_Z[i] - PERCENTILE_Z[i - 1])) * (curveVals[i] - curveVals[i - 1]);
+}
 
 // ─── SVG Chart ───────────────────────────────────────────────────────
 
-function GrowthChart({ entries, metric, sex, band }: { entries: GrowthEntry[]; metric: Metric; sex: 'GIRL' | 'BOY'; band: Band }) {
+function GrowthChart({ entries, metric, sex, band, dob }: { entries: GrowthEntry[]; metric: Metric; sex: 'GIRL' | 'BOY'; band: Band; dob: string }) {
   const W = 360; const H = 220;
   const PAD = { top: 16, right: 16, bottom: 32, left: 36 };
   const isChild = band === 'child';
@@ -151,6 +180,62 @@ function GrowthChart({ entries, metric, sex, band }: { entries: GrowthEntry[]; m
     ? Array.from({ length: 10 }, (_, i) => 24 + i * 24) // 2y..20y
     : [0, 3, 6, 9, 12, 15, 18, 21, 24];
 
+  // ── Tap-to-project: follow the child's current percentile track ──
+  const svgRef = useRef<SVGSVGElement>(null);
+  const [cursorAge, setCursorAge] = useState<number | null>(null);
+  const stepX = isChild ? 6 : 1;
+
+  // Interpolate the five percentile curves at an arbitrary age
+  function curveAt(age: number): number[] {
+    const t = (age - xMin) / stepX;
+    const i = Math.min(Math.floor(t), agePoints.length - 2);
+    const f = t - i;
+    return PERCENTILE_LABELS.map((_, k) => {
+      const vals = Object.values(curves)[k];
+      return vals[i] + (vals[i + 1] - vals[i]) * f;
+    });
+  }
+
+  const latest = [...validEntries].sort((a, b) => a.ageMonths - b.ageMonths).pop();
+  const childZ = latest ? zFromValue(curveAt(latest.ageMonths), latest[metric] as number) : null;
+
+  const projPoints = childZ !== null && latest
+    ? agePoints.filter((m) => m >= latest.ageMonths)
+        .map((m) => `${xPx(m).toFixed(1)},${yPx(valueFromZ(curveAt(m), childZ)).toFixed(1)}`)
+        .join(' ')
+    : null;
+
+  function handlePointer(e: React.PointerEvent<SVGSVGElement>) {
+    if (childZ === null || !svgRef.current) return;
+    const rect = svgRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * W;
+    const age = xMin + ((x - PAD.left) / (W - PAD.left - PAD.right)) * (xMax - xMin);
+    setCursorAge(Math.max(xMin, Math.min(xMax, age)));
+  }
+
+  let cursor: { x: number; y: number; lines: string[] } | null = null;
+  if (cursorAge !== null && childZ !== null) {
+    // cursorAge persists across metric/band/child switches — re-clamp to this chart's range
+    const clampedAge = Math.max(xMin, Math.min(xMax, cursorAge));
+    const val = valueFromZ(curveAt(clampedAge), childZ);
+    const pct = Math.round(phi(childZ) * 100);
+    const when = new Date(new Date(dob).getTime() + clampedAge * 30.44 * 24 * 3600 * 1000)
+      .toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+    const totalMonths = Math.round(clampedAge);
+    const ageLabel = isChild
+      ? `${Math.floor(totalMonths / 12)}y ${totalMonths % 12}m`
+      : `${totalMonths}m`;
+    const unit = metric === 'weight' ? 'kg' : 'cm';
+    cursor = {
+      x: xPx(clampedAge),
+      y: yPx(val),
+      lines: [`${ageLabel} · ${when}`, `${val.toFixed(1)} ${unit}`, `≈ ${pct < 1 ? '<1' : pct > 99 ? '>99' : pct}%`],
+    };
+  }
+  const tipW = 86; const tipH = 38;
+  const tipX = cursor ? Math.min(Math.max(cursor.x + 8, PAD.left), W - PAD.right - tipW) : 0;
+  const tipY = cursor ? Math.max(cursor.y - tipH - 8, 2) : 0;
+
   return (
     <div>
       <p className="text-[11px] font-semibold text-gray-500 text-center mb-1">
@@ -167,7 +252,14 @@ function GrowthChart({ entries, metric, sex, band }: { entries: GrowthEntry[]; m
           <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ backgroundColor: '#8B1A2B' }} /> Your child
         </span>
       </div>
-      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ maxHeight: 220 }}>
+      <svg
+        ref={svgRef}
+        viewBox={`0 0 ${W} ${H}`}
+        className="w-full"
+        style={{ maxHeight: 220, touchAction: childZ !== null ? 'none' : 'auto' }}
+        onPointerDown={handlePointer}
+        onPointerMove={(e) => { if (e.buttons === 1) handlePointer(e); }}
+      >
         {yTicks.map((v) => (
           <g key={v}>
             <line x1={PAD.left} x2={W - PAD.right} y1={yPx(v)} y2={yPx(v)} stroke="#e5e7eb" strokeWidth="0.5" />
@@ -183,13 +275,35 @@ function GrowthChart({ entries, metric, sex, band }: { entries: GrowthEntry[]; m
           <polyline key={i} points={pctPoints(vals)} fill="none" stroke={PERCENTILE_COLORS[i]}
             strokeWidth={i === 2 ? 1.5 : 0.8} strokeDasharray={i === 2 ? undefined : '3,2'} opacity={0.7} />
         ))}
+        {projPoints && (
+          <polyline points={projPoints} fill="none" stroke="#8B1A2B" strokeWidth={1.2}
+            strokeDasharray="4,3" opacity={0.45} />
+        )}
         {validEntries.map((e) => (
           <circle key={e.id} cx={xPx(e.ageMonths)} cy={yPx(e[metric] as number)}
             r={4} fill="#8B1A2B" stroke="white" strokeWidth={1.5} />
         ))}
         <line x1={PAD.left} x2={PAD.left} y1={PAD.top} y2={H - PAD.bottom} stroke="#d1d5db" strokeWidth="1" />
         <line x1={PAD.left} x2={W - PAD.right} y1={H - PAD.bottom} y2={H - PAD.bottom} stroke="#d1d5db" strokeWidth="1" />
+        {cursor && (
+          <g>
+            <line x1={cursor.x} x2={cursor.x} y1={PAD.top} y2={H - PAD.bottom} stroke="#8B1A2B" strokeWidth="0.7" opacity={0.4} />
+            <circle cx={cursor.x} cy={cursor.y} r={4.5} fill="white" stroke="#8B1A2B" strokeWidth={2} />
+            <rect x={tipX} y={tipY} width={tipW} height={tipH} rx={5} fill="#1f2937" opacity={0.92} />
+            {cursor.lines.map((line, i) => (
+              <text key={i} x={tipX + 7} y={tipY + 12 + i * 11} fontSize="8.5"
+                fill={i === 0 ? '#d1d5db' : 'white'} fontWeight={i === 0 ? 'normal' : 'bold'}>
+                {line}
+              </text>
+            ))}
+          </g>
+        )}
       </svg>
+      {childZ !== null && (
+        <p className="text-[10px] text-gray-400 text-center mt-1.5">
+          Tap or drag on the chart to see projected growth along the current percentile
+        </p>
+      )}
     </div>
   );
 }
@@ -563,7 +677,7 @@ export function GrowthTracker() {
           </div>
 
           <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
-            <GrowthChart entries={entries} metric={activeMetric} sex={selectedChild!.sex} band={band} />
+            <GrowthChart entries={entries} metric={activeMetric} sex={selectedChild!.sex} band={band} dob={selectedChild!.dob} />
           </div>
 
           <div className="grid grid-cols-3 gap-2">
