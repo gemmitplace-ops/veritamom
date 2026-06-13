@@ -10,7 +10,8 @@
     "signOut": "Sign Out",
     "admin": "Admin",
     "messages": "Messages",
-    "notifications": "Alerts"
+    "notifications": "Alerts",
+    "research": "Research"
   },
   "auth": {
     "email": "Email address",

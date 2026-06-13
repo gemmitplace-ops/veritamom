@@ -10,7 +10,8 @@
     "signOut": "로그아웃",
     "admin": "관리자",
     "messages": "메시지",
-    "notifications": "알림"
+    "notifications": "알림",
+    "research": "연구"
   },
   "auth": {
     "email": "이메일 주소",

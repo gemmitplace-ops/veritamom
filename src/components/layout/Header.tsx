@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
-import { Link, useRouter } from '@/i18n/navigation';
+import { Link, useRouter, usePathname as useLocalePathname } from '@/i18n/navigation';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { useState } from 'react';
 import { Bell, MessageSquare, Search, Menu, X, ChevronDown } from 'lucide-react';
@@ -19,8 +19,17 @@ export function Header({ locale }: { locale: string }) {
   const { user, signOut } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const localePathname = useLocalePathname(); // locale-stripped, e.g. '/tools'
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Primary navigation — shown as a desktop row here; mobile uses BottomNav + hamburger
+  const navLinks = [
+    { href: '/', label: t('nav.home') },
+    { href: '/research', label: t('nav.research') },
+    { href: '/community', label: t('nav.community') },
+    { href: '/tools', label: t('nav.tools') },
+  ];
 
   function switchLocale(code: string) {
     // pathname includes locale prefix e.g. '/en/community' → strip first segment
@@ -163,6 +172,31 @@ export function Header({ locale }: { locale: string }) {
           </button>
         </div>
       </div>
+
+      {/* Desktop primary nav */}
+      <nav className="hidden md:block border-t border-brand-cream-dark/60 dark:border-gray-800">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center gap-1 h-11">
+            {navLinks.map(({ href, label }) => {
+              const isActive = href === '/' ? localePathname === '/' : localePathname.startsWith(href);
+              return (
+                <Link
+                  key={href}
+                  href={href as never}
+                  className={cn(
+                    'px-4 py-2 text-sm font-medium rounded-lg transition-colors',
+                    isActive
+                      ? 'text-brand-crimson'
+                      : 'text-gray-600 dark:text-gray-300 hover:text-brand-crimson hover:bg-white/60 dark:hover:bg-gray-800'
+                  )}
+                >
+                  {label}
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </nav>
 
       {/* Mobile search bar */}
       <div className="md:hidden px-4 pb-3">

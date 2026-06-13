@@ -10,7 +10,8 @@
     "signOut": "退出",
     "admin": "管理员",
     "messages": "消息",
-    "notifications": "通知"
+    "notifications": "通知",
+    "research": "研究"
   },
   "auth": {
     "email": "电子邮箱",
