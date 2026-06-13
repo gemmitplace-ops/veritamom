@@ -5,7 +5,6 @@ import { useTranslations } from 'next-intl';
 import { ResearchCard } from './ResearchCard';
 import { ArticleCard } from './ArticleCard';
 import { ResearchSkeleton } from './ResearchSkeleton';
-import { cn } from '@/lib/utils';
 
 const trimesters = [
   { value: 'ALL', key: 'research.filterAll' },
@@ -87,32 +86,16 @@ export function ResearchFeed({ locale }: { locale: string }) {
 
   return (
     <div>
-      {/* Filter — dropdown on mobile, pills on md+ */}
+      {/* Filter dropdown */}
       <select
         value={trimester}
         onChange={(e) => setTrimester(e.target.value)}
-        className="md:hidden w-full mb-4 px-4 py-2.5 rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-brand-crimson/30 focus:border-brand-crimson/60"
+        className="w-full mb-4 px-4 py-2.5 rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-brand-crimson/30 focus:border-brand-crimson/60"
       >
         {trimesters.map(({ value, key }) => (
           <option key={value} value={value}>{t(key as never)}</option>
         ))}
       </select>
-      <div className="hidden md:flex gap-2 pb-1 mb-5">
-        {trimesters.map(({ value, key }) => (
-          <button
-            key={value}
-            onClick={() => setTrimester(value)}
-            className={cn(
-              'flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-all border',
-              trimester === value
-                ? 'bg-brand-crimson text-white border-brand-crimson shadow-sm'
-                : 'bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-700 hover:border-brand-crimson/50 hover:text-brand-crimson'
-            )}
-          >
-            {t(key as never)}
-          </button>
-        ))}
-      </div>
 
       {/* Feed label */}
       <div className="flex items-center justify-between mb-4">
