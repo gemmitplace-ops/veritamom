@@ -61,6 +61,11 @@ export function SignInForm() {
             required
             className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-crimson min-h-[44px]"
           />
+          <div className="flex justify-end mt-1">
+            <Link href="/forgot-password" className="text-xs text-brand-crimson hover:underline">
+              {t('auth.forgotPassword')}
+            </Link>
+          </div>
         </div>
 
         {error && (
