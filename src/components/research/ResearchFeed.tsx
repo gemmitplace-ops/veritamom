@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { ResearchCard } from './ResearchCard';
 import { ArticleCard } from './ArticleCard';
 import { ResearchSkeleton } from './ResearchSkeleton';
@@ -106,27 +107,31 @@ export function ResearchFeed({ locale }: { locale: string }) {
       </div>
 
       {/* The Veritamom Brief — featured editorial card */}
-      <div className="mb-5 rounded-xl border border-brand-gold/25 overflow-hidden shadow-[0_2px_12px_rgba(201,168,76,0.12)]" style={{ backgroundColor: '#FAF8F3' }}>
-        <div className="flex">
-          <div className="w-1 flex-shrink-0" style={{ backgroundColor: '#C9A84C' }} />
-          <div className="p-5 flex-1">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-[10px] font-bold uppercase tracking-[0.16em]" style={{ color: '#A88C3A' }}>
-                {t2('editorial')}
-              </span>
+      {articles[0] && (
+        <Link href={`/articles/${articles[0].slug}` as never} className="block mb-5">
+          <div className="rounded-xl border border-brand-gold/25 overflow-hidden shadow-[0_2px_12px_rgba(201,168,76,0.12)] hover:shadow-[0_4px_20px_rgba(201,168,76,0.2)] hover:border-brand-gold/50 transition-all" style={{ backgroundColor: '#FAF8F3' }}>
+            <div className="flex">
+              <div className="w-1 flex-shrink-0" style={{ backgroundColor: '#C9A84C' }} />
+              <div className="p-5 flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.16em]" style={{ color: '#A88C3A' }}>
+                    {t2('editorial')}
+                  </span>
+                </div>
+                <h2 className="font-serif text-[18px] leading-snug mb-2" style={{ color: '#8B1A2B', fontFamily: 'Georgia, "Times New Roman", serif' }}>
+                  {articles[0].title}
+                </h2>
+                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-3">
+                  {articles[0].hook}
+                </p>
+                <span className="inline-flex items-center gap-1 text-sm font-semibold" style={{ color: '#8B1A2B' }}>
+                  Learn More <span aria-hidden>›</span>
+                </span>
+              </div>
             </div>
-            <h2 className="font-serif text-[18px] leading-snug mb-2" style={{ color: '#8B1A2B', fontFamily: 'Georgia, "Times New Roman", serif' }}>
-              The Veritamom Brief
-            </h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-3">
-              Our medical team curates the most important maternal health developments each week — from new clinical guidelines to product safety alerts — distilled into clear, evidence-grounded insights for mothers and caregivers.
-            </p>
-            <button className="inline-flex items-center gap-1 text-sm font-semibold hover:gap-2 transition-all" style={{ color: '#8B1A2B' }}>
-              Learn More <span aria-hidden>›</span>
-            </button>
           </div>
-        </div>
-      </div>
+        </Link>
+      )}
 
       {/* Mixed feed */}
       {loading ? (
