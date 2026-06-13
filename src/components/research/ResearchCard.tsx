@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { Heart, Bookmark, MessageCircle, ExternalLink, BookOpen } from 'lucide-react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { cn } from '@/lib/utils';
@@ -76,10 +77,12 @@ export function ResearchCard({ paper, locale }: { paper: Paper; locale: string }
             )}
           </div>
 
-          {/* Title — Georgia serif, always crimson */}
-          <h2 className="font-serif text-base leading-snug mb-1 transition-colors" style={{ color: '#8B1A2B', fontFamily: 'Georgia, "Times New Roman", serif' }}>
-            {paper.title}
-          </h2>
+          {/* Title — links to detail page */}
+          <Link href={`/papers/${paper.id}` as never}>
+            <h2 className="font-serif text-base leading-snug mb-1 hover:underline cursor-pointer transition-colors" style={{ color: '#8B1A2B', fontFamily: 'Georgia, "Times New Roman", serif' }}>
+              {paper.title}
+            </h2>
+          </Link>
 
           {/* Citation */}
           <p className="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">

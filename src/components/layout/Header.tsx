@@ -5,7 +5,8 @@ import { usePathname } from 'next/navigation';
 import { Link, useRouter, usePathname as useLocalePathname } from '@/i18n/navigation';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { useState } from 'react';
-import { Bell, MessageSquare, Search, Menu, X, ChevronDown } from 'lucide-react';
+import { Bell, MessageSquare, Menu, X, ChevronDown } from 'lucide-react';
+import { SearchBar } from './SearchBar';
 import { cn } from '@/lib/utils';
 
 const locales = [
@@ -58,14 +59,7 @@ export function Header({ locale }: { locale: string }) {
 
         {/* Search bar — center */}
         <div className="flex-1 max-w-xl mx-auto hidden md:block">
-          <div className="relative">
-            <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder={t('nav.searchPlaceholder')}
-              className="w-full pl-10 pr-4 py-2.5 rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-crimson/30 focus:border-brand-crimson/60 placeholder:text-gray-400 transition-all"
-            />
-          </div>
+          <SearchBar />
         </div>
 
         {/* Right actions */}
@@ -199,14 +193,7 @@ export function Header({ locale }: { locale: string }) {
 
       {/* Mobile search bar */}
       <div className="md:hidden px-4 pb-3">
-        <div className="relative">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
-            placeholder={t('nav.searchPlaceholder')}
-            className="w-full pl-9 pr-4 py-2.5 rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-crimson/30 placeholder:text-gray-400"
-          />
-        </div>
+        <SearchBar />
       </div>
 
       {/* Mobile expanded menu */}

@@ -87,8 +87,17 @@ export function ResearchFeed({ locale }: { locale: string }) {
 
   return (
     <div>
-      {/* Filter pill bar */}
-      <div className="flex gap-2 overflow-x-auto pb-1 mb-5 no-scrollbar">
+      {/* Filter — dropdown on mobile, pills on md+ */}
+      <select
+        value={trimester}
+        onChange={(e) => setTrimester(e.target.value)}
+        className="md:hidden w-full mb-4 px-4 py-2.5 rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-brand-crimson/30 focus:border-brand-crimson/60"
+      >
+        {trimesters.map(({ value, key }) => (
+          <option key={value} value={value}>{t(key as never)}</option>
+        ))}
+      </select>
+      <div className="hidden md:flex gap-2 pb-1 mb-5">
         {trimesters.map(({ value, key }) => (
           <button
             key={value}
