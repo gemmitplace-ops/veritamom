@@ -26,7 +26,6 @@ export function Header({ locale }: { locale: string }) {
   // Primary navigation — shown as a desktop row here; mobile uses BottomNav + hamburger
   const navLinks = [
     { href: '/', label: t('nav.home') },
-    { href: '/research', label: t('nav.research') },
     { href: '/community', label: t('nav.community') },
     { href: '/tools', label: t('nav.tools') },
   ];
@@ -63,7 +62,7 @@ export function Header({ locale }: { locale: string }) {
             <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
-              placeholder="Search studies, toxins, ingredients, or gear…"
+              placeholder={t('nav.searchPlaceholder')}
               className="w-full pl-10 pr-4 py-2.5 rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-crimson/30 focus:border-brand-crimson/60 placeholder:text-gray-400 transition-all"
             />
           </div>
@@ -204,7 +203,7 @@ export function Header({ locale }: { locale: string }) {
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
             type="text"
-            placeholder="Search studies, toxins, gear…"
+            placeholder={t('nav.searchPlaceholder')}
             className="w-full pl-9 pr-4 py-2.5 rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-crimson/30 placeholder:text-gray-400"
           />
         </div>

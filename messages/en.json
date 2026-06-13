@@ -11,7 +11,8 @@
     "admin": "Admin",
     "messages": "Messages",
     "notifications": "Alerts",
-    "research": "Research"
+    "research": "Research",
+    "searchPlaceholder": "Search studies, toxins, ingredients, or gear…"
   },
   "auth": {
     "email": "Email address",

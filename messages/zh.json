@@ -11,7 +11,8 @@
     "admin": "管理员",
     "messages": "消息",
     "notifications": "通知",
-    "research": "研究"
+    "research": "研究",
+    "searchPlaceholder": "搜索研究、毒素、成分或产品…"
   },
   "auth": {
     "email": "电子邮箱",

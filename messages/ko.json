@@ -11,7 +11,8 @@
     "admin": "관리자",
     "messages": "메시지",
     "notifications": "알림",
-    "research": "연구"
+    "research": "연구",
+    "searchPlaceholder": "연구, 독소, 성분 또는 제품 검색…"
   },
   "auth": {
     "email": "이메일 주소",
