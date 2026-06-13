@@ -5,7 +5,7 @@ import { useRouter } from '@/i18n/navigation';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { AppShell } from '@/components/layout/AppShell';
 import { Link } from '@/i18n/navigation';
-import { FileText, Flag, BadgeCheck, Users, Shield, PenLine } from 'lucide-react';
+import { FileText, Flag, BadgeCheck, Users, Shield, PenLine, Mail } from 'lucide-react';
 
 
 const adminSections = [
@@ -43,6 +43,13 @@ const adminSections = [
     title: 'Verify Professionals',
     description: 'Approve or reject professional verification requests.',
     color: '#8B1A2B',
+  },
+  {
+    href: '/admin/communication',
+    icon: Mail,
+    title: 'User Communication',
+    description: 'Send a weekly update or announcement email to all registered users.',
+    color: '#C9A84C',
   },
 ];
 
