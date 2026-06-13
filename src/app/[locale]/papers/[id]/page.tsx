@@ -3,6 +3,7 @@ import { AppShell } from '@/components/layout/AppShell';
 import { BookOpen, ExternalLink, ArrowLeft } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { prisma } from '@/lib/prisma';
+import { PaperComments } from '@/components/research/PaperComments';
 
 interface Props {
   params: { locale: string; id: string };
@@ -112,6 +113,8 @@ export default async function PaperPage({ params }: Props) {
             )}
           </div>
         </article>
+
+        <PaperComments paperId={paper.id} />
       </div>
     </AppShell>
   );
