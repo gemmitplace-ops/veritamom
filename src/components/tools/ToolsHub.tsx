@@ -13,8 +13,8 @@ import { GrowthTracker } from './GrowthTracker';
 import { Link } from '@/i18n/navigation';
 import { cn } from '@/lib/utils';
 import {
-  Baby, Activity, Timer, Star, ClipboardList, Droplets,
-  Moon, Trash2, TrendingUp, BookOpen, Lock, ChevronLeft,
+  Baby, Activity, Timer, Star, ClipboardList, Milk,
+  Moon, Package, TrendingUp, BookOpen, Lock, ChevronLeft,
   Smile, Heart,
 } from 'lucide-react';
 
@@ -38,9 +38,9 @@ const TOOLS: ToolDef[] = [
   { id: 'contractions', labelKey: 'tools.contractionTimer',  icon: <Timer size={26} />,        color: '#8B1A2B', bg: 'rgba(139,26,43,0.10)',  section: 'pregnancy', forStatuses: ['PREGNANT'] },
   { id: 'symptoms',     labelKey: 'tools.symptomLog',        icon: <ClipboardList size={26} />,color: '#7c3aed', bg: 'rgba(124,58,237,0.10)', section: 'pregnancy', forStatuses: ['PREGNANT', 'TRYING', 'PARENT', 'PROFESSIONAL'] },
   { id: 'milestones',   labelKey: 'tools.milestoneTracker',  icon: <Star size={26} />,         color: '#C9A84C', bg: 'rgba(201,168,76,0.12)',  section: 'newborn', forStatuses: ['PARENT', 'PREGNANT', 'TRYING', 'PROFESSIONAL'] },
-  { id: 'feeding',      labelKey: 'tools.feedingLog',        icon: <Droplets size={26} />,     color: '#2d7a4f', bg: 'rgba(45,122,79,0.10)',   section: 'newborn', forStatuses: ['PARENT', 'PREGNANT', 'TRYING', 'PROFESSIONAL'] },
+  { id: 'feeding',      labelKey: 'tools.feedingLog',        icon: <Milk size={26} />,         color: '#2d7a4f', bg: 'rgba(45,122,79,0.10)',   section: 'newborn', forStatuses: ['PARENT', 'PREGNANT', 'TRYING', 'PROFESSIONAL'] },
   { id: 'sleep',        labelKey: 'tools.sleepLog',          icon: <Moon size={26} />,         color: '#7c3aed', bg: 'rgba(124,58,237,0.10)', section: 'newborn', forStatuses: ['PARENT', 'PREGNANT', 'TRYING', 'PROFESSIONAL'] },
-  { id: 'diaper',       labelKey: 'tools.diaperLog',         icon: <Trash2 size={26} />,       color: '#b45309', bg: 'rgba(180,83,9,0.10)',    section: 'newborn', forStatuses: ['PARENT', 'PREGNANT', 'TRYING', 'PROFESSIONAL'] },
+  { id: 'diaper',       labelKey: 'tools.diaperLog',         icon: <Package size={26} />,      color: '#b45309', bg: 'rgba(180,83,9,0.10)',    section: 'newborn', forStatuses: ['PARENT', 'PREGNANT', 'TRYING', 'PROFESSIONAL'] },
   { id: 'growth',       labelKey: 'tools.growthChart',       icon: <TrendingUp size={26} />,   color: '#8B1A2B', bg: 'rgba(139,26,43,0.10)',  section: 'newborn', forStatuses: ['PARENT', 'PREGNANT', 'TRYING', 'PROFESSIONAL'] },
   { id: 'summary',      labelKey: 'tools.dailySummary',      icon: <BookOpen size={26} />,     color: '#4b5563', bg: 'rgba(75,85,99,0.10)',    section: 'general', forStatuses: ['PREGNANT', 'PARENT', 'TRYING', 'PROFESSIONAL'] },
 ];
@@ -145,9 +145,9 @@ const PREVIEW_TOOL_DEFS: Array<{ labelKey: string; icon: React.ReactNode; color:
   { labelKey: 'tools.kickCounter',      icon: <Activity size={24} />,     color: '#C9A84C', bg: 'rgba(201,168,76,0.12)' },
   { labelKey: 'tools.contractionTimer', icon: <Timer size={24} />,        color: '#8B1A2B', bg: 'rgba(139,26,43,0.10)' },
   { labelKey: 'tools.milestoneTracker', icon: <Star size={24} />,         color: '#C9A84C', bg: 'rgba(201,168,76,0.12)' },
-  { labelKey: 'tools.feedingLog',       icon: <Droplets size={24} />,     color: '#2d7a4f', bg: 'rgba(45,122,79,0.10)' },
+  { labelKey: 'tools.feedingLog',       icon: <Milk size={24} />,         color: '#2d7a4f', bg: 'rgba(45,122,79,0.10)' },
   { labelKey: 'tools.sleepLog',         icon: <Moon size={24} />,         color: '#7c3aed', bg: 'rgba(124,58,237,0.10)' },
-  { labelKey: 'tools.diaperLog',        icon: <Trash2 size={24} />,       color: '#b45309', bg: 'rgba(180,83,9,0.10)' },
+  { labelKey: 'tools.diaperLog',        icon: <Package size={24} />,      color: '#b45309', bg: 'rgba(180,83,9,0.10)' },
   { labelKey: 'tools.growthChart',      icon: <TrendingUp size={24} />,   color: '#8B1A2B', bg: 'rgba(139,26,43,0.10)' },
   { labelKey: 'tools.symptomLog',       icon: <ClipboardList size={24} />,color: '#7c3aed', bg: 'rgba(124,58,237,0.10)' },
 ];
