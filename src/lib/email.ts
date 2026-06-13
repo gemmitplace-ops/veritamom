@@ -1,6 +1,8 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+function getResend() {
+  return new Resend(process.env.RESEND_API_KEY);
+}
 
 const FROM = 'mother@veritamom.com';
 const SITE = 'https://veritamom.com';
@@ -8,7 +10,7 @@ const SITE = 'https://veritamom.com';
 export async function sendPasswordResetEmail(to: string, name: string, token: string) {
   const resetUrl = `${SITE}/en/reset-password?token=${token}`;
 
-  await resend.emails.send({
+  await getResend().emails.send({
     from: `Veritamom <${FROM}>`,
     to,
     subject: 'Reset your Veritamom password',
@@ -41,7 +43,7 @@ export async function sendPasswordResetEmail(to: string, name: string, token: st
 }
 
 export async function sendWelcomeEmail(to: string, name: string) {
-  await resend.emails.send({
+  await getResend().emails.send({
     from: `Veritamom <${FROM}>`,
     to,
     subject: 'Welcome to Veritamom',
@@ -74,7 +76,7 @@ export async function sendWelcomeEmail(to: string, name: string) {
 }
 
 export async function sendPublisherPromotionEmail(to: string, name: string) {
-  await resend.emails.send({
+  await getResend().emails.send({
     from: `Veritamom <${FROM}>`,
     to,
     subject: 'You\'ve been promoted to Publisher on Veritamom',
