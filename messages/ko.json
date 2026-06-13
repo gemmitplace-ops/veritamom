@@ -123,7 +123,34 @@
     "flagSubmit": "신고 제출",
     "flagSuccess": "감사합니다. 관리자가 검토할 예정입니다.",
     "deletePost": "게시글 삭제",
-    "editPost": "게시글 수정"
+    "editPost": "게시글 수정",
+    "theCircle": "더 서클",
+    "communityTagline": "Veritamom 커뮤니티",
+    "safeSpace": "엄마와 돌봄 제공자가 경험을 나누는 안전한 공간입니다.",
+    "posts": "게시글",
+    "online": "온라인",
+    "browseTopics": "주제 탐색",
+    "guidelines": {
+      "title": "커뮤니티 가이드라인",
+      "beKind": "서로 친절하게 대하기",
+      "citeSources": "가능하면 출처 인용하기",
+      "noMedicalAdvice": "의료 조언 금지",
+      "respectPrivacy": "개인 정보 존중하기"
+    },
+    "whoToFollow": "팔로우 추천",
+    "follow": "팔로우",
+    "seeAllMembers": "모든 멤버 보기",
+    "communityStats": "커뮤니티 통계",
+    "members": "멤버",
+    "replies": "댓글",
+    "joinTheCircle": "더 서클 가입하기",
+    "joinStory": "전 세계 수천 명의 엄마들과 이야기를 나눠보세요.",
+    "signUpFree": "무료 가입",
+    "activeDiscussions": "활발한 토론",
+    "live": "실시간",
+    "joinConversation": "더 서클에서 지금 진행 중인 대화에 참여하세요.",
+    "sort": "정렬",
+    "postCount": "게시글 {count}개"
   },
   "profile": {
     "followers": "팔로워",
@@ -206,7 +233,21 @@
     "save": "저장",
     "cancel": "취소",
     "dailySummary": "오늘의 요약",
-    "noLogsToday": "오늘 아직 기록이 없습니다."
+    "noLogsToday": "오늘 아직 기록이 없습니다.",
+    "subtitle": "여정의 모든 단계를 추적하세요",
+    "backToTools": "도구로 돌아가기",
+    "contractionTimer": "진통 타이머",
+    "milestoneTracker": "발달 기록",
+    "growthChart": "성장 차트",
+    "section": {
+      "pregnancy": "임신 중",
+      "newborn": "아기 & 신생아",
+      "general": "일반"
+    },
+    "signInToUse": "로그인하여 도구 사용",
+    "noAccount": "계정이 없으신가요?",
+    "createOneFree": "무료로 가입하기",
+    "whatsInside": "기능 소개"
   },
   "messages": {
     "title": "메시지",

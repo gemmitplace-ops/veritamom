@@ -123,7 +123,34 @@
     "flagSubmit": "提交举报",
     "flagSuccess": "感谢您的反馈，我们的管理员将会审核此内容。",
     "deletePost": "删除帖子",
-    "editPost": "编辑帖子"
+    "editPost": "编辑帖子",
+    "theCircle": "妈妈圈",
+    "communityTagline": "Veritamom 社区",
+    "safeSpace": "一个让妈妈和照护者分享经验的安全空间。",
+    "posts": "帖子",
+    "online": "在线",
+    "browseTopics": "浏览话题",
+    "guidelines": {
+      "title": "社区守则",
+      "beKind": "友善待人",
+      "citeSources": "尽量引用来源",
+      "noMedicalAdvice": "不提供医疗建议",
+      "respectPrivacy": "尊重隐私"
+    },
+    "whoToFollow": "推荐关注",
+    "follow": "关注",
+    "seeAllMembers": "查看所有成员",
+    "communityStats": "社区数据",
+    "members": "成员",
+    "replies": "回复",
+    "joinTheCircle": "加入妈妈圈",
+    "joinStory": "与全球数千位妈妈分享您的故事。",
+    "signUpFree": "免费注册",
+    "activeDiscussions": "热门讨论",
+    "live": "直播",
+    "joinConversation": "加入妈妈圈正在进行的对话。",
+    "sort": "排序",
+    "postCount": "{count} 篇帖子"
   },
   "profile": {
     "followers": "粉丝",
@@ -206,7 +233,21 @@
     "save": "保存",
     "cancel": "取消",
     "dailySummary": "今日汇总",
-    "noLogsToday": "今天还没有记录。"
+    "noLogsToday": "今天还没有记录。",
+    "subtitle": "追踪您旅程的每一个阶段",
+    "backToTools": "返回工具",
+    "contractionTimer": "宫缩计时",
+    "milestoneTracker": "里程碑追踪",
+    "growthChart": "生长曲线",
+    "section": {
+      "pregnancy": "孕期工具",
+      "newborn": "宝宝与新生儿",
+      "general": "常规"
+    },
+    "signInToUse": "登录后使用工具",
+    "noAccount": "还没有账户？",
+    "createOneFree": "免费注册",
+    "whatsInside": "功能一览"
   },
   "messages": {
     "title": "消息",

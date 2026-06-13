@@ -2,20 +2,20 @@
 
 import { Link } from '@/i18n/navigation';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { MessageCircle, TrendingUp, HelpCircle, Star, AlertTriangle, UtensilsCrossed, Package } from 'lucide-react';
 
-const topicIcons: Record<string, React.ReactNode> = {
-  Questions:       <HelpCircle size={13} />,
-  Wins:            <Star size={13} />,
-  Concerns:        <AlertTriangle size={13} />,
-  Recipes:         <UtensilsCrossed size={13} />,
-  'Product Reviews': <Package size={13} />,
-};
-
-const topics = ['Questions', 'Wins', 'Concerns', 'Recipes', 'Product Reviews'];
-
 export function CommunityLeftSidebar() {
+  const t = useTranslations('community');
   const [stats, setStats] = useState<{ total: number; online: number } | null>(null);
+
+  const topicKeys = [
+    { key: 'question', icon: <HelpCircle size={13} /> },
+    { key: 'win',      icon: <Star size={13} /> },
+    { key: 'concern',  icon: <AlertTriangle size={13} /> },
+    { key: 'recipe',   icon: <UtensilsCrossed size={13} /> },
+    { key: 'productReview', icon: <Package size={13} /> },
+  ];
 
   useEffect(() => {
     fetch('/api/posts?limit=1')
@@ -37,26 +37,26 @@ export function CommunityLeftSidebar() {
         <div className="px-4 py-3" style={{ backgroundColor: '#8B1A2B' }}>
           <div className="flex items-center gap-2">
             <MessageCircle size={14} className="text-brand-gold" style={{ color: '#C9A84C' }} />
-            <h3 className="font-serif text-sm font-bold text-white">The Circle</h3>
+            <h3 className="font-serif text-sm font-bold text-white">{t('theCircle')}</h3>
           </div>
           <p className="text-[10px] mt-0.5" style={{ color: 'rgba(255,255,255,0.7)' }}>
-            Veritamom Community
+            {t('communityTagline')}
           </p>
         </div>
         <div className="px-4 py-3 space-y-2">
           <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
-            A safe space for mothers and caregivers to share evidence-grounded experiences.
+            {t('safeSpace')}
           </p>
           {stats && (
             <div className="flex gap-3 pt-1">
               <div className="text-center">
                 <p className="text-sm font-bold" style={{ color: '#8B1A2B' }}>{stats.total.toLocaleString()}</p>
-                <p className="text-[10px] text-gray-400 uppercase tracking-wide">Posts</p>
+                <p className="text-[10px] text-gray-400 uppercase tracking-wide">{t('posts')}</p>
               </div>
               <div className="w-px bg-gray-200 dark:bg-gray-700" />
               <div className="text-center">
                 <p className="text-sm font-bold" style={{ color: '#C9A84C' }}>{stats.online}</p>
-                <p className="text-[10px] text-gray-400 uppercase tracking-wide">Online</p>
+                <p className="text-[10px] text-gray-400 uppercase tracking-wide">{t('online')}</p>
               </div>
             </div>
           )}
@@ -71,20 +71,20 @@ export function CommunityLeftSidebar() {
             className="text-xs font-bold uppercase tracking-wider"
             style={{ color: '#8B1A2B', fontFamily: 'Georgia, "Times New Roman", serif' }}
           >
-            Browse Topics
+            {t('browseTopics')}
           </h3>
         </div>
         <nav className="p-2 space-y-0.5">
-          {topics.map((topic) => (
+          {topicKeys.map(({ key, icon }) => (
             <Link
-              key={topic}
+              key={key}
               href={'/community' as never}
               className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-brand-crimson/6 hover:text-brand-crimson transition-colors group"
             >
               <span className="text-gray-400 group-hover:text-brand-crimson transition-colors">
-                {topicIcons[topic]}
+                {icon}
               </span>
-              <span>{topic}</span>
+              <span>{t(`categories.${key}` as never)}</span>
             </Link>
           ))}
         </nav>
@@ -96,13 +96,13 @@ export function CommunityLeftSidebar() {
         style={{ backgroundColor: 'rgba(201,168,76,0.06)' }}
       >
         <p className="text-[10px] font-bold uppercase tracking-[0.14em] mb-1" style={{ color: '#A88C3A' }}>
-          Community Guidelines
+          {t('guidelines.title')}
         </p>
         <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-1 leading-relaxed list-none">
-          {['Be kind and supportive', 'Cite sources when possible', 'No medical advice', 'Respect privacy'].map((g) => (
-            <li key={g} className="flex items-start gap-1.5">
+          {(['beKind', 'citeSources', 'noMedicalAdvice', 'respectPrivacy'] as const).map((key) => (
+            <li key={key} className="flex items-start gap-1.5">
               <span style={{ color: '#C9A84C' }}>·</span>
-              {g}
+              {t(`guidelines.${key}` as never)}
             </li>
           ))}
         </ul>

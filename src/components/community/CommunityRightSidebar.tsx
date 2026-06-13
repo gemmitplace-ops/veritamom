@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Link } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { UserPlus, BarChart2, ChevronRight, BadgeCheck } from 'lucide-react';
 
@@ -26,6 +27,7 @@ function flag(code: string | null) {
 }
 
 export function CommunityRightSidebar() {
+  const t = useTranslations('community');
   const { user } = useAuth();
   const [suggestions, setSuggestions] = useState<UserSuggestion[]>([]);
   const [stats, setStats] = useState<{ posts: number; members: number; replies: number } | null>(null);
@@ -64,7 +66,7 @@ export function CommunityRightSidebar() {
             className="text-xs font-bold uppercase tracking-wider"
             style={{ color: '#8B1A2B', fontFamily: 'Georgia, "Times New Roman", serif' }}
           >
-            Who to Follow
+            {t('whoToFollow')}
           </h3>
         </div>
 
@@ -115,7 +117,7 @@ export function CommunityRightSidebar() {
                     className="text-[10px] font-semibold px-2.5 py-1 rounded-full border transition-colors flex-shrink-0"
                     style={{ color: '#8B1A2B', borderColor: 'rgba(139,26,43,0.3)' }}
                   >
-                    Follow
+                    {t('follow')}
                   </button>
                 )}
               </div>
@@ -130,7 +132,7 @@ export function CommunityRightSidebar() {
               className="flex items-center gap-1 text-xs font-medium transition-colors"
               style={{ color: '#8B1A2B' }}
             >
-              See all members <ChevronRight size={12} />
+              {t('seeAllMembers')} <ChevronRight size={12} />
             </Link>
           </div>
         )}
@@ -144,14 +146,14 @@ export function CommunityRightSidebar() {
             className="text-xs font-bold uppercase tracking-wider"
             style={{ color: '#8B1A2B', fontFamily: 'Georgia, "Times New Roman", serif' }}
           >
-            Community Stats
+            {t('communityStats')}
           </h3>
         </div>
         <div className="p-4 grid grid-cols-3 gap-3 text-center">
           {[
-            { label: 'Posts', value: stats?.posts ?? '—' },
-            { label: 'Members', value: stats ? stats.members : '—' },
-            { label: 'Replies', value: stats ? stats.replies : '—' },
+            { label: t('posts'), value: stats?.posts ?? '—' },
+            { label: t('members'), value: stats ? stats.members : '—' },
+            { label: t('replies'), value: stats ? stats.replies : '—' },
           ].map(({ label, value }) => (
             <div key={label}>
               <p className="text-sm font-bold" style={{ color: '#8B1A2B' }}>
@@ -170,17 +172,17 @@ export function CommunityRightSidebar() {
           style={{ background: 'linear-gradient(135deg, #8B1A2B 0%, #6d1422 100%)' }}
         >
           <p className="text-[10px] uppercase tracking-widest mb-1 font-medium" style={{ color: '#C9A84C' }}>
-            Join the Circle
+            {t('joinTheCircle')}
           </p>
           <p className="text-sm font-serif leading-snug mb-3">
-            Share your story with thousands of mothers worldwide.
+            {t('joinStory')}
           </p>
           <Link
             href={'/sign-up' as never}
             className="inline-flex items-center gap-1 text-xs font-semibold px-4 py-2 rounded-full transition-colors"
             style={{ backgroundColor: '#C9A84C', color: '#fff' }}
           >
-            Sign up free
+            {t('signUpFree')}
           </Link>
         </div>
       )}
@@ -192,15 +194,15 @@ export function CommunityRightSidebar() {
       >
         <div className="flex items-center justify-between mb-2">
           <p className="text-[10px] font-bold uppercase tracking-[0.14em]" style={{ color: '#A88C3A' }}>
-            Active Discussions
+            {t('activeDiscussions')}
           </p>
           <span className="flex items-center gap-1 text-[10px] text-gray-400">
             <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block animate-pulse" />
-            Live
+            {t('live')}
           </span>
         </div>
         <p className="text-xs text-gray-500 leading-relaxed">
-          Join the conversation happening right now in The Circle.
+          {t('joinConversation')}
         </p>
       </div>
     </aside>

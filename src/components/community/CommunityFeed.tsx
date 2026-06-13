@@ -8,19 +8,19 @@ import { useAuth } from '@/components/auth/AuthProvider';
 import { cn } from '@/lib/utils';
 import { Plus, Users } from 'lucide-react';
 
-const categories = [
-  { value: 'ALL', label: 'All' },
-  { value: 'QUESTION', label: 'Questions' },
-  { value: 'WIN', label: 'Wins' },
-  { value: 'CONCERN', label: 'Concerns' },
-  { value: 'PRODUCT_REVIEW', label: 'Reviews' },
-  { value: 'RECIPE', label: 'Recipes' },
+const CATEGORY_KEYS = [
+  { value: 'ALL',          key: 'categories.all' },
+  { value: 'QUESTION',     key: 'categories.question' },
+  { value: 'WIN',          key: 'categories.win' },
+  { value: 'CONCERN',      key: 'categories.concern' },
+  { value: 'PRODUCT_REVIEW', key: 'categories.productReview' },
+  { value: 'RECIPE',       key: 'categories.recipe' },
 ];
 
-const sorts = [
-  { value: 'hot', label: 'Hot' },
-  { value: 'new', label: 'New' },
-  { value: 'top', label: 'Top' },
+const SORT_KEYS = [
+  { value: 'hot', key: 'sortHot' },
+  { value: 'new', key: 'sortNew' },
+  { value: 'top', key: 'sortTop' },
 ];
 
 interface Post {
@@ -95,7 +95,7 @@ export function CommunityFeed() {
 
       {/* Category pills — matches homepage trimester pill style */}
       <div className="flex gap-2 overflow-x-auto pb-1 mb-4 no-scrollbar">
-        {categories.map(({ value, label }) => (
+        {CATEGORY_KEYS.map(({ value, key }) => (
           <button
             key={value}
             onClick={() => setCategory(value)}
@@ -107,15 +107,15 @@ export function CommunityFeed() {
             )}
             style={category === value ? { backgroundColor: '#8B1A2B', borderColor: '#8B1A2B' } : {}}
           >
-            {label}
+            {t(`community.${key}` as never)}
           </button>
         ))}
       </div>
 
       {/* Sort tabs */}
       <div className="flex items-center gap-1 mb-5">
-        <span className="text-xs text-gray-400 mr-1 uppercase tracking-wider font-medium">Sort:</span>
-        {sorts.map(({ value, label }) => (
+        <span className="text-xs text-gray-400 mr-1 uppercase tracking-wider font-medium">{t('community.sort')}:</span>
+        {SORT_KEYS.map(({ value, key }) => (
           <button
             key={value}
             onClick={() => setSort(value)}
@@ -126,10 +126,10 @@ export function CommunityFeed() {
                 : 'text-gray-400 border-transparent hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-600'
             )}
           >
-            {label}
+            {t(`community.${key}` as never)}
           </button>
         ))}
-        <span className="ml-auto text-xs text-gray-400">{posts.length} posts</span>
+        <span className="ml-auto text-xs text-gray-400">{t('community.postCount', { count: posts.length } as never)}</span>
       </div>
 
       {/* Posts */}

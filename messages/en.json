@@ -123,7 +123,34 @@
     "flagSubmit": "Submit report",
     "flagSuccess": "Thank you — our moderators will review this.",
     "deletePost": "Delete post",
-    "editPost": "Edit post"
+    "editPost": "Edit post",
+    "theCircle": "The Circle",
+    "communityTagline": "Veritamom Community",
+    "safeSpace": "A safe space for mothers and caregivers to share evidence-grounded experiences.",
+    "posts": "Posts",
+    "online": "Online",
+    "browseTopics": "Browse Topics",
+    "guidelines": {
+      "title": "Community Guidelines",
+      "beKind": "Be kind and supportive",
+      "citeSources": "Cite sources when possible",
+      "noMedicalAdvice": "No medical advice",
+      "respectPrivacy": "Respect privacy"
+    },
+    "whoToFollow": "Who to Follow",
+    "follow": "Follow",
+    "seeAllMembers": "See all members",
+    "communityStats": "Community Stats",
+    "members": "Members",
+    "replies": "Replies",
+    "joinTheCircle": "Join the Circle",
+    "joinStory": "Share your story with thousands of mothers worldwide.",
+    "signUpFree": "Sign up free",
+    "activeDiscussions": "Active Discussions",
+    "live": "Live",
+    "joinConversation": "Join the conversation happening right now in The Circle.",
+    "sort": "Sort",
+    "postCount": "{count} posts"
   },
   "profile": {
     "followers": "Followers",
@@ -206,7 +233,21 @@
     "save": "Save",
     "cancel": "Cancel",
     "dailySummary": "Daily Summary",
-    "noLogsToday": "Nothing logged today yet."
+    "noLogsToday": "Nothing logged today yet.",
+    "subtitle": "Track every stage of your journey",
+    "backToTools": "Back to Tools",
+    "contractionTimer": "Contraction Timer",
+    "milestoneTracker": "Milestone Tracker",
+    "growthChart": "Growth Chart",
+    "section": {
+      "pregnancy": "During Pregnancy",
+      "newborn": "Baby & Newborn",
+      "general": "General"
+    },
+    "signInToUse": "Sign in to use your tools",
+    "noAccount": "No account?",
+    "createOneFree": "Create one free",
+    "whatsInside": "What's inside"
   },
   "messages": {
     "title": "Messages",
