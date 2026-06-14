@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { TrendingUp, MessageCircle, ChevronRight } from 'lucide-react';
+import { SuggestedUsers } from '@/components/profile/SuggestedUsers';
 import { formatRelativeTime } from '@/lib/utils';
 
 interface Post {
@@ -132,6 +133,8 @@ export function RightSidebar() {
           {t('readThisWeek')} <ChevronRight size={12} />
         </Link>
       </div>
+      {/* Suggested users */}
+      <SuggestedUsers />
     </aside>
   );
 }

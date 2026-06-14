@@ -6,6 +6,7 @@ import { useAuth } from '@/components/auth/AuthProvider';
 import { getCountryFlag } from '@/lib/utils';
 import { BadgeCheck, MapPin, Shield, Baby, TrendingUp } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
+import { FollowListModal } from './FollowListModal';
 
 interface ChildItem {
   id: string;
@@ -42,12 +43,18 @@ export function UserProfile({ username }: { username: string }) {
   const [profile, setProfile] = useState<ProfileUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [following, setFollowing] = useState(false);
+  const [followerCount, setFollowerCount] = useState(0);
+  const [modal, setModal] = useState<'followers' | 'following' | null>(null);
   const [children, setChildren] = useState<ChildItem[]>([]);
 
   useEffect(() => {
     fetch(`/api/users/${username}`)
       .then((r) => r.json())
-      .then((d) => setProfile(d.user))
+      .then((d) => {
+        setProfile(d.user);
+        setFollowing(d.isFollowing ?? false);
+        setFollowerCount(d.user?._count?.followers ?? 0);
+      })
       .finally(() => setLoading(false));
   }, [username]);
 
@@ -65,6 +72,7 @@ export function UserProfile({ username }: { username: string }) {
     const res = await fetch(`/api/users/${profile.id}/follow`, { method: 'POST' });
     const data = await res.json();
     setFollowing(data.following);
+    setFollowerCount(c => data.following ? c + 1 : c - 1);
   }
 
   const statusLabels: Record<string, string> = {
@@ -156,18 +164,28 @@ export function UserProfile({ username }: { username: string }) {
 
         {/* Stats */}
         <div className="flex gap-6 mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
-          {[
-            { label: t('profile.posts'), value: profile._count.posts },
-            { label: t('profile.followers'), value: profile._count.followers },
-            { label: t('profile.following'), value: profile._count.following },
-          ].map(({ label, value }) => (
-            <div key={label} className="text-center">
-              <p className="font-semibold text-gray-900 dark:text-gray-100">{value}</p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">{label}</p>
-            </div>
-          ))}
+          <div className="text-center">
+            <p className="font-semibold text-gray-900 dark:text-gray-100">{profile._count.posts}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{t('profile.posts')}</p>
+          </div>
+          <button onClick={() => setModal('followers')} className="text-center hover:opacity-70 transition-opacity">
+            <p className="font-semibold text-gray-900 dark:text-gray-100">{followerCount}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{t('profile.followers')}</p>
+          </button>
+          <button onClick={() => setModal('following')} className="text-center hover:opacity-70 transition-opacity">
+            <p className="font-semibold text-gray-900 dark:text-gray-100">{profile._count.following}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{t('profile.following')}</p>
+          </button>
         </div>
       </div>
+
+      {modal && (
+        <FollowListModal
+          userId={profile.id}
+          type={modal}
+          onClose={() => setModal(null)}
+        />
+      )}
 
       {/* Children — own profile only */}
       {isOwnProfile && children.length > 0 && (
