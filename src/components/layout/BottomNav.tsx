@@ -3,14 +3,14 @@
 import { useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/i18n/navigation';
 import { cn } from '@/lib/utils';
-import { Home, LayoutGrid, Users, Shield, UserCircle } from 'lucide-react';
+import { Home, LayoutGrid, Users, MessageSquare, UserCircle } from 'lucide-react';
 
 const navItems = [
-  { href: '/',            icon: Home,        label: 'Home'       },
-  { href: '/community',   icon: Users,       label: 'The Circle' },
-  { href: '/tools',       icon: LayoutGrid,  label: 'Tools'      },
-  { href: '/research',    icon: Shield,      label: 'The Vault'  },
-  { href: '/profile',     icon: UserCircle,  label: 'Profile'    },
+  { href: '/',            icon: Home,           label: 'Home'     },
+  { href: '/community',   icon: Users,          label: 'The Circle' },
+  { href: '/tools',       icon: LayoutGrid,     label: 'Tools'    },
+  { href: '/messages',    icon: MessageSquare,  label: 'Messages' },
+  { href: '/profile',     icon: UserCircle,     label: 'Profile'  },
 ];
 
 export function BottomNav() {
