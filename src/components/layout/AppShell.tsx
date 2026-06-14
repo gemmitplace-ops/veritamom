@@ -1,5 +1,6 @@
 import { Header } from './Header';
 import { BottomNav } from './BottomNav';
+import { AskWidget } from '@/components/ai/AskWidget';
 
 export function AppShell({
   children,
@@ -13,6 +14,7 @@ export function AppShell({
       <Header locale={locale} />
       <main className="flex-1 pb-16 md:pb-0">{children}</main>
       <BottomNav />
+      <AskWidget />
     </div>
   );
 }
