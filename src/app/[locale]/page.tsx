@@ -1,14 +1,13 @@
 import { AppShell } from '@/components/layout/AppShell';
 import { ResearchFeed } from '@/components/research/ResearchFeed';
 import { RightSidebar } from '@/components/layout/RightSidebar';
-import { MissionHero } from '@/components/layout/MissionHero';
 import { getTranslations } from 'next-intl/server';
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
-  const t = await getTranslations({ locale, namespace: 'mission' });
+  const t = await getTranslations({ locale, namespace: 'research' });
   return {
-    title: `Veritamom — ${t('headline')}`,
-    description: t('subheadline'),
+    title: `Veritamom — ${t('title')}`,
+    description: t('subtitle'),
   };
 }
 
@@ -20,7 +19,6 @@ export default function HomePage({ params: { locale } }: { params: { locale: str
 
           {/* Center: Hero + Research feed */}
           <main className="flex-1 min-w-0">
-            <MissionHero />
             <ResearchFeed locale={locale} />
           </main>
 
