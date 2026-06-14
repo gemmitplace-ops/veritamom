@@ -1,10 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useLocale } from 'next-intl';
 import { useRouter, Link } from '@/i18n/navigation';
 
 export default function ResetPasswordPage() {
   const router = useRouter();
+  const locale = useLocale();
   const [token, setToken] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
@@ -44,9 +46,11 @@ export default function ResetPasswordPage() {
     <div className="min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: '#FAF8F3' }}>
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <span className="block font-serif font-bold" style={{ color: '#8B1A2B', fontSize: '24px' }}>VERITAMOM</span>
+          <span className="block font-serif font-bold" style={{ color: '#8B1A2B', fontSize: '24px' }}>
+            {locale === 'zh' ? '薇理妈咪' : 'VERITAMOM'}
+          </span>
           <span className="block text-[9px] font-semibold uppercase tracking-[0.17em] mt-1" style={{ color: '#C9A84C' }}>
-            The Gold Standard in Maternal Intelligence
+            {locale === 'zh' ? '母婴健康的黄金标准' : 'The Gold Standard in Maternal Intelligence'}
           </span>
         </div>
 
