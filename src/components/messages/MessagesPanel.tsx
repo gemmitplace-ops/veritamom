@@ -5,6 +5,8 @@ import { useTranslations } from 'next-intl';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { Send, MessageSquare, Plus, X, Users } from 'lucide-react';
 import { cn, formatRelativeTime } from '@/lib/utils';
+import { Link } from '@/i18n/navigation';
+import { FollowListModal } from '@/components/profile/FollowListModal';
 
 interface MemberUser {
   id: string; name: string; username: string; avatarUrl: string | null;
@@ -50,6 +52,8 @@ export function MessagesPanel() {
   const [newDMError, setNewDMError] = useState('');
   const [userResults, setUserResults] = useState<{ id: string; name: string; username: string }[]>([]);
   const [, startTransition] = useTransition();
+  const [otherUserProfile, setOtherUserProfile] = useState<{ id: string; username: string; following: boolean; followers: number; followingCount: number } | null>(null);
+  const [followModal, setFollowModal] = useState<'followers' | 'following' | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const activeConv = conversations.find((c) => c.id === activeConvId);
@@ -67,6 +71,7 @@ export function MessagesPanel() {
 
   async function openConversation(convId: string) {
     setActiveConvId(convId);
+    setOtherUserProfile(null);
     setMessagesLoading(true);
     const res = await fetch(`/api/conversations/${convId}/messages`);
     if (res.ok) {
@@ -74,6 +79,36 @@ export function MessagesPanel() {
       setMessages(d.messages || []);
     }
     setMessagesLoading(false);
+
+    // Load the other user's profile for the header
+    const conv = conversations.find(c => c.id === convId);
+    if (conv && !conv.isGroup && user) {
+      const other = conv.members.find(m => m.user.id !== user.id)?.user;
+      if (other) {
+        const profileRes = await fetch(`/api/users/${other.id}`);
+        if (profileRes.ok) {
+          const pd = await profileRes.json();
+          setOtherUserProfile({
+            id: pd.user.id,
+            username: pd.user.username,
+            following: pd.isFollowing ?? false,
+            followers: pd.user._count?.followers ?? 0,
+            followingCount: pd.user._count?.following ?? 0,
+          });
+        }
+      }
+    }
+  }
+
+  async function toggleFollowOther() {
+    if (!otherUserProfile) return;
+    const res = await fetch(`/api/users/${otherUserProfile.id}/follow`, { method: 'POST' });
+    const data = await res.json();
+    setOtherUserProfile(prev => prev ? {
+      ...prev,
+      following: data.following,
+      followers: prev.followers + (data.following ? 1 : -1),
+    } : null);
   }
 
   useEffect(() => {
@@ -273,29 +308,84 @@ export function MessagesPanel() {
         {activeConv ? (
           <>
             {/* Thread header */}
-            <div className="p-4 border-b border-gray-100 dark:border-gray-800 flex items-center gap-3">
+            <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800 flex items-center gap-3">
               <button
-                className="md:hidden p-1.5 text-gray-400 hover:text-brand-crimson"
+                className="md:hidden p-1.5 text-gray-400 hover:text-brand-crimson flex-shrink-0"
                 onClick={() => setActiveConvId(null)}
               >
                 ←
               </button>
+
               {activeConv.isGroup ? (
-                <div className="w-9 h-9 rounded-full bg-brand-gold/20 text-brand-gold-dark flex items-center justify-center">
-                  <Users size={16} />
+                <div className="w-10 h-10 rounded-full bg-brand-gold/20 text-brand-gold-dark flex items-center justify-center flex-shrink-0">
+                  <Users size={18} />
                 </div>
+              ) : otherUserProfile ? (
+                <Link href={`/profile/${otherUserProfile.username}` as never} className="flex-shrink-0">
+                  <Avatar name={activeConv.members.find(m => m.user.id !== user.id)?.user.name || 'U'} />
+                </Link>
               ) : (
-                <Avatar name={activeConv.members.find((m) => m.user.id !== user.id)?.user.name || 'U'} />
+                <Avatar name={activeConv.members.find(m => m.user.id !== user.id)?.user.name || 'U'} />
               )}
-              <div>
-                <p className="font-semibold text-gray-900 dark:text-gray-100 text-sm">
-                  <ConvName conv={activeConv} currentUserId={user.id} />
-                </p>
+
+              <div className="flex-1 min-w-0">
+                {otherUserProfile ? (
+                  <Link href={`/profile/${otherUserProfile.username}` as never} className="font-semibold text-gray-900 dark:text-gray-100 text-sm hover:text-brand-crimson transition-colors">
+                    <ConvName conv={activeConv} currentUserId={user.id} />
+                  </Link>
+                ) : (
+                  <p className="font-semibold text-gray-900 dark:text-gray-100 text-sm">
+                    <ConvName conv={activeConv} currentUserId={user.id} />
+                  </p>
+                )}
+
+                {/* Follower/following stats */}
+                {otherUserProfile && (
+                  <div className="flex items-center gap-3 mt-0.5">
+                    <button
+                      onClick={() => setFollowModal('followers')}
+                      className="text-[11px] text-gray-400 hover:text-brand-crimson transition-colors"
+                    >
+                      <span className="font-semibold text-gray-700 dark:text-gray-300">{otherUserProfile.followers}</span> followers
+                    </button>
+                    <button
+                      onClick={() => setFollowModal('following')}
+                      className="text-[11px] text-gray-400 hover:text-brand-crimson transition-colors"
+                    >
+                      <span className="font-semibold text-gray-700 dark:text-gray-300">{otherUserProfile.followingCount}</span> following
+                    </button>
+                  </div>
+                )}
+
                 {activeConv.isGroup && (
                   <p className="text-xs text-gray-400">{activeConv.members.length} members</p>
                 )}
               </div>
+
+              {/* Follow / Unfollow button */}
+              {otherUserProfile && (
+                <button
+                  onClick={toggleFollowOther}
+                  className={cn(
+                    'flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors',
+                    otherUserProfile.following
+                      ? 'border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+                      : 'bg-brand-crimson text-white hover:opacity-90'
+                  )}
+                >
+                  {otherUserProfile.following ? 'Following' : 'Follow'}
+                </button>
+              )}
             </div>
+
+            {/* Follow list modal */}
+            {followModal && otherUserProfile && (
+              <FollowListModal
+                userId={otherUserProfile.id}
+                type={followModal}
+                onClose={() => setFollowModal(null)}
+              />
+            )}
 
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
