@@ -6,6 +6,7 @@ import { Link, useRouter, usePathname as useLocalePathname } from '@/i18n/naviga
 import { useAuth } from '@/components/auth/AuthProvider';
 import { useState } from 'react';
 import { Bell, MessageSquare, Menu, X, ChevronDown } from 'lucide-react';
+import { useUnreadCount } from '@/hooks/useUnreadCount';
 import { SearchBar } from './SearchBar';
 import { cn } from '@/lib/utils';
 
@@ -22,6 +23,7 @@ export function Header({ locale }: { locale: string }) {
   const pathname = usePathname();
   const localePathname = useLocalePathname(); // locale-stripped, e.g. '/tools'
   const [menuOpen, setMenuOpen] = useState(false);
+  const { unread } = useUnreadCount();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Primary navigation — shown as a desktop row here; mobile uses BottomNav + hamburger
@@ -94,9 +96,14 @@ export function Header({ locale }: { locale: string }) {
               </Link>
               <Link
                 href="/notifications"
-                className="p-2 rounded-lg text-gray-500 hover:text-brand-crimson hover:bg-white dark:hover:bg-gray-800 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+                className="relative p-2 rounded-lg text-gray-500 hover:text-brand-crimson hover:bg-white dark:hover:bg-gray-800 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
               >
                 <Bell size={18} />
+                {unread > 0 && (
+                  <span className="absolute top-1 right-1 min-w-[16px] h-4 px-0.5 rounded-full bg-brand-crimson text-white text-[9px] font-bold flex items-center justify-center leading-none">
+                    {unread > 99 ? '99+' : unread}
+                  </span>
+                )}
               </Link>
 
               {/* Avatar menu */}

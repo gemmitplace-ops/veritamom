@@ -51,6 +51,21 @@ export async function POST(
       });
     }
 
+    // Notify post author on first upvote (fire-and-forget)
+    if (value === 1 && !existing) {
+      ;(async () => {
+        try {
+          const voter = await prisma.user.findUnique({ where: { id: user.userId }, select: { name: true } });
+          const post = await prisma.post.findUnique({ where: { id: params.id }, select: { authorId: true, title: true } });
+          if (post && post.authorId !== user.userId) {
+            await prisma.notification.create({
+              data: { userId: post.authorId, type: 'REPLY', title: `${voter?.name ?? 'Someone'} liked your post`, body: post.title?.slice(0, 120) ?? '', link: `/community/${params.id}` },
+            });
+          }
+        } catch { /* ignore */ }
+      })();
+    }
+
     return NextResponse.json({ vote: value });
   } catch (error: unknown) {
     if ((error as Error).message === 'Unauthorized') {

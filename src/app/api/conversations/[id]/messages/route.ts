@@ -46,6 +46,22 @@ export async function POST(
       data: { body, senderId: user.userId, conversationId: params.id },
       include: { sender: { select: { id: true, name: true, username: true, avatarUrl: true } } },
     });
+
+    // Notify other members (fire-and-forget)
+    ;(async () => {
+      try {
+        const others = await prisma.conversationMember.findMany({
+          where: { conversationId: params.id, userId: { not: user.userId } },
+          select: { userId: true },
+        });
+        for (const o of others) {
+          await prisma.notification.create({
+            data: { userId: o.userId, type: 'REPLY', title: `New message from ${message.sender.name}`, body: body.slice(0, 120), link: `/messages` },
+          });
+        }
+      } catch { /* ignore */ }
+    })();
+
     return NextResponse.json({ message }, { status: 201 });
   } catch {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { Bell, UserPlus, MessageCircle, AtSign, CalendarDays, CheckCheck } from 'lucide-react';
+import { Bell, UserPlus, MessageCircle, AtSign, CalendarDays, CheckCheck, Heart, MessageSquare } from 'lucide-react';
 import { formatRelativeTime, cn } from '@/lib/utils';
 
 interface Notification {
@@ -48,6 +48,11 @@ export function NotificationsPanel() {
     await fetch('/api/notifications', { method: 'PATCH' });
     setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
     setMarking(false);
+  }
+
+  async function markOneRead(id: string) {
+    setNotifications((prev) => prev.map((n) => n.id === id ? { ...n, isRead: true } : n));
+    await fetch(`/api/notifications/${id}`, { method: 'PATCH' });
   }
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
@@ -131,9 +136,9 @@ export function NotificationsPanel() {
             );
 
             return notif.link ? (
-              <Link key={notif.id} href={notif.link as never}>{content}</Link>
+              <Link key={notif.id} href={notif.link as never} onClick={() => !notif.isRead && markOneRead(notif.id)}>{content}</Link>
             ) : (
-              <div key={notif.id}>{content}</div>
+              <div key={notif.id} onClick={() => !notif.isRead && markOneRead(notif.id)} className={notif.isRead ? '' : 'cursor-pointer'}>{content}</div>
             );
           })}
         </div>

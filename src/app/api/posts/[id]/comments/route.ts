@@ -68,6 +68,27 @@ export async function POST(
       },
     });
 
+    // Notify post/comment author (fire-and-forget)
+    ;(async () => {
+      try {
+        if (data.parentId) {
+          const parent = await prisma.comment.findUnique({ where: { id: data.parentId }, select: { authorId: true } });
+          if (parent && parent.authorId !== user.userId) {
+            await prisma.notification.create({
+              data: { userId: parent.authorId, type: 'REPLY', title: `${comment.author.name} replied to your comment`, body: data.body.slice(0, 120), link: `/community/${params.id}` },
+            });
+          }
+        } else {
+          const post = await prisma.post.findUnique({ where: { id: params.id }, select: { authorId: true, title: true } });
+          if (post && post.authorId !== user.userId) {
+            await prisma.notification.create({
+              data: { userId: post.authorId, type: 'REPLY', title: `${comment.author.name} commented on your post`, body: data.body.slice(0, 120), link: `/community/${params.id}` },
+            });
+          }
+        }
+      } catch { /* ignore */ }
+    })();
+
     return NextResponse.json({ comment }, { status: 201 });
   } catch (error: unknown) {
     if ((error as Error).message === 'Unauthorized') {

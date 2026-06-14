@@ -26,13 +26,14 @@ export async function POST(
         data: { followerId: user.userId, followingId: params.id },
       });
 
+      const follower = await prisma.user.findUnique({ where: { id: user.userId }, select: { name: true, username: true } });
       await prisma.notification.create({
         data: {
           userId: params.id,
           type: 'FOLLOW',
-          title: 'New follower',
-          body: `Someone started following you`,
-          link: `/profile/${user.userId}`,
+          title: `${follower?.name ?? 'Someone'} started following you`,
+          body: `@${follower?.username ?? ''}`,
+          link: `/profile/${follower?.username ?? user.userId}`,
         },
       });
 
