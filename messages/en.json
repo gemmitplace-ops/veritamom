@@ -1,6 +1,22 @@
 {
   "brandName": "VERITAMOM",
-  "brandTagline": "The Gold Standard in Maternal Intelligence",
+  "brandTagline": "Promoting baby development & safety from pregnancy to age 2",
+  "mission": {
+    "badge": "Nonprofit initiative",
+    "headline": "Every baby deserves the best start in life.",
+    "subheadline": "Veritamom is a nonprofit initiative dedicated to promoting the development and safety of newborns and babies from pregnancy through their first two years — equipping mothers with evidence-based research, practical tools, and a caring community.",
+    "cta": "Join our mission",
+    "ctaSecondary": "Meet the community",
+    "missionLabel": "Our mission",
+    "missionStatement": "To promote the development and safety of every newborn and baby so they can reach their full potential — by giving mothers the trusted information, tools, and connections they need.",
+    "stat1Value": "Free",
+    "stat1Label": "Always free for mothers",
+    "stat2Value": "Evidence",
+    "stat2Label": "Research-backed guidance",
+    "stat3Value": "0–2 yrs",
+    "stat3Label": "Pregnancy through toddler",
+    "feedTitle": "Research & Guidance"
+  },
   "nav": {
     "home": "Home",
     "search": "Search",
@@ -91,8 +107,8 @@
     "noComments": "No comments yet. Be the first to share your thoughts."
   },
   "community": {
-    "title": "Community",
-    "subtitle": "Connect with mothers around the world",
+    "title": "Mother's Circle",
+    "subtitle": "A safe space for mothers supporting each other through pregnancy and the first two years",
     "newPost": "New post",
     "categories": {
       "all": "All",
@@ -236,7 +252,7 @@
     "cancel": "Cancel",
     "dailySummary": "Daily Summary",
     "noLogsToday": "Nothing logged today yet.",
-    "subtitle": "Track every stage of your journey",
+    "subtitle": "Track your baby's development from pregnancy through their first two years",
     "backToTools": "Back to Tools",
     "contractionTimer": "Contraction Timer",
     "milestoneTracker": "Milestone Tracker",
@@ -333,9 +349,12 @@
     "readThisWeek": "Read this week"
   },
   "research2": {
-    "latestResearch": "Latest Research",
+    "latestResearch": "Research & Guidance",
     "editorial": "Editorial · Weekly Brief",
-    "plainEnglish": "Plain-English Summary"
+    "plainEnglish": "Plain-English Summary",
+    "briefTitle": "The Veritamom Brief",
+    "briefBody": "Our team curates the most important developments in newborn and baby health each week — from developmental milestones and feeding guidance to product safety alerts — distilled into clear, evidence-based insights for mothers.",
+    "learnMore": "Read more"
   },
   "common": {
     "loading": "Loading...",

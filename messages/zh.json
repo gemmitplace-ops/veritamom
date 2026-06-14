@@ -1,6 +1,22 @@
 {
   "brandName": "薇理妈咪",
-  "brandTagline": "母婴健康的黄金标准",
+  "brandTagline": "从孕期到两岁，守护宝宝发育与安全",
+  "mission": {
+    "badge": "非营利项目",
+    "headline": "每一个宝宝，都值得最好的起点。",
+    "subheadline": "薇理妈咪是一个非营利项目，致力于从孕期到宝宝两岁，全程促进新生儿和婴儿的发育与安全——为妈妈们提供循证研究、实用工具和温暖社群。",
+    "cta": "加入我们的使命",
+    "ctaSecondary": "认识社区",
+    "missionLabel": "我们的使命",
+    "missionStatement": "促进每一个新生儿和宝宝的发育与安全，让他们充分发挥潜力——为妈妈们提供可信赖的信息、工具和支持。",
+    "stat1Value": "免费",
+    "stat1Label": "永远对妈妈免费",
+    "stat2Value": "循证",
+    "stat2Label": "基于研究的指导",
+    "stat3Value": "0–2岁",
+    "stat3Label": "孕期至幼儿阶段",
+    "feedTitle": "研究与指引"
+  },
   "nav": {
     "home": "首页",
     "search": "搜索",
@@ -91,8 +107,8 @@
     "noComments": "暂无评论，快来分享您的想法吧。"
   },
   "community": {
-    "title": "社区",
-    "subtitle": "与全世界的妈妈们连接",
+    "title": "妈妈圈",
+    "subtitle": "一个安全的空间，让妈妈们在孕期和宝宝两岁前相互支持",
     "newPost": "发布帖子",
     "categories": {
       "all": "全部",
@@ -236,7 +252,7 @@
     "cancel": "取消",
     "dailySummary": "今日汇总",
     "noLogsToday": "今天还没有记录。",
-    "subtitle": "追踪您旅程的每一个阶段",
+    "subtitle": "从孕期到宝宝两岁，全程追踪宝宝的发育成长",
     "backToTools": "返回工具",
     "contractionTimer": "宫缩计时",
     "milestoneTracker": "里程碑追踪",
@@ -333,9 +349,12 @@
     "readThisWeek": "阅读本周内容"
   },
   "research2": {
-    "latestResearch": "最新研究",
+    "latestResearch": "研究与指引",
     "editorial": "编辑 · 每周简报",
-    "plainEnglish": "通俗易懂摘要"
+    "plainEnglish": "通俗易懂摘要",
+    "briefTitle": "薇理妈咪简报",
+    "briefBody": "我们的团队每周精选新生儿和婴儿健康领域最重要的进展——从发育里程碑、喂养指导到产品安全警示——为妈妈们提供清晰、循证的洞见。",
+    "learnMore": "阅读更多"
   },
   "common": {
     "loading": "加载中...",

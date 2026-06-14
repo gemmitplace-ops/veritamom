@@ -117,14 +117,14 @@ export function ResearchFeed({ locale }: { locale: string }) {
               </span>
             </div>
             <h2 className="font-serif text-[18px] leading-snug mb-2" style={{ color: '#8B1A2B', fontFamily: 'Georgia, "Times New Roman", serif' }}>
-              The Veritamom Brief
+              {t2('briefTitle')}
             </h2>
             <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-3">
-              Our medical team curates the most important maternal health developments each week — from new clinical guidelines to product safety alerts — distilled into clear, evidence-grounded insights for mothers and caregivers.
+              {t2('briefBody')}
             </p>
             {articles[0] && (
               <Link href={`/articles/${articles[0].slug}` as never} className="inline-flex items-center gap-1 text-sm font-semibold hover:gap-2 transition-all" style={{ color: '#8B1A2B' }}>
-                Learn More <span aria-hidden>›</span>
+                {t2('learnMore')} <span aria-hidden>›</span>
               </Link>
             )}
           </div>

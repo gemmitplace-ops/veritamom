@@ -1,6 +1,22 @@
 {
   "brandName": "VERITAMOM",
-  "brandTagline": "모성 건강의 황금 기준",
+  "brandTagline": "임신부터 2세까지 아기 발달과 안전을 위해",
+  "mission": {
+    "badge": "비영리 이니셔티브",
+    "headline": "모든 아기는 최고의 출발을 받을 자격이 있습니다.",
+    "subheadline": "Veritamom은 임신부터 생후 2년까지 신생아와 아기의 발달과 안전을 촉진하는 비영리 이니셔티브입니다. 근거 기반 연구, 실용적인 도구, 따뜻한 커뮤니티로 엄마들을 지원합니다.",
+    "cta": "우리의 미션에 참여하세요",
+    "ctaSecondary": "커뮤니티 만나기",
+    "missionLabel": "우리의 미션",
+    "missionStatement": "모든 신생아와 아기가 잠재력을 최대한 발휘할 수 있도록 발달과 안전을 촉진하며, 엄마들에게 신뢰할 수 있는 정보, 도구, 연결을 제공합니다.",
+    "stat1Value": "무료",
+    "stat1Label": "엄마들에게 항상 무료",
+    "stat2Value": "근거",
+    "stat2Label": "연구 기반 가이드",
+    "stat3Value": "0–2세",
+    "stat3Label": "임신~유아기",
+    "feedTitle": "연구 및 가이드"
+  },
   "nav": {
     "home": "홈",
     "search": "검색",
@@ -91,8 +107,8 @@
     "noComments": "아직 댓글이 없습니다. 첫 번째로 의견을 남겨보세요."
   },
   "community": {
-    "title": "커뮤니티",
-    "subtitle": "전 세계 엄마들과 소통하세요",
+    "title": "엄마 모임",
+    "subtitle": "임신과 아기의 첫 2년을 함께 나누는 안전한 공간",
     "newPost": "게시글 작성",
     "categories": {
       "all": "전체",
@@ -236,7 +252,7 @@
     "cancel": "취소",
     "dailySummary": "오늘의 요약",
     "noLogsToday": "오늘 아직 기록이 없습니다.",
-    "subtitle": "여정의 모든 단계를 추적하세요",
+    "subtitle": "임신부터 아기의 첫 2년까지 발달 과정을 기록하세요",
     "backToTools": "도구로 돌아가기",
     "contractionTimer": "진통 타이머",
     "milestoneTracker": "발달 기록",
@@ -333,9 +349,12 @@
     "readThisWeek": "이번 주 읽기"
   },
   "research2": {
-    "latestResearch": "최신 연구",
+    "latestResearch": "연구 및 가이드",
     "editorial": "에디토리얼 · 주간 브리프",
-    "plainEnglish": "쉬운 설명 요약"
+    "plainEnglish": "쉬운 설명 요약",
+    "briefTitle": "Veritamom 브리프",
+    "briefBody": "저희 팀은 매주 신생아와 아기 건강 분야의 가장 중요한 발전 사항을 선별합니다 — 발달 이정표, 수유 지침부터 제품 안전 경보까지 — 엄마들을 위한 명확하고 근거 기반의 인사이트로 제공합니다.",
+    "learnMore": "더 읽기"
   },
   "common": {
     "loading": "로딩 중...",
