@@ -31,7 +31,7 @@ export function SuggestedUsers() {
     const res = await fetch(`/api/users/${id}/follow`, { method: 'POST' });
     const data = await res.json();
     if (data.following) {
-      setFollowedIds(prev => new Set([...prev, id]));
+      setFollowedIds(prev => { const s = new Set(prev); s.add(id); return s; });
     }
   }
 
