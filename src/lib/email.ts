@@ -4,7 +4,7 @@ function getResend() {
   return new Resend(process.env.RESEND_API_KEY);
 }
 
-const FROM = 'mom@veritamom.com';
+const FROM = 'mother@veritamom.com';
 const SITE = 'https://veritamom.com';
 
 export async function sendPasswordResetEmail(to: string, name: string, token: string) {
