@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useTransition } from 'react';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { Send, MessageSquare, Plus, X, Users } from 'lucide-react';
@@ -48,6 +48,8 @@ export function MessagesPanel() {
   const [showNewDM, setShowNewDM] = useState(false);
   const [newDMUsername, setNewDMUsername] = useState('');
   const [newDMError, setNewDMError] = useState('');
+  const [userResults, setUserResults] = useState<{ id: string; name: string; username: string }[]>([]);
+  const [, startTransition] = useTransition();
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const activeConv = conversations.find((c) => c.id === activeConvId);
@@ -94,24 +96,38 @@ export function MessagesPanel() {
     setSending(false);
   }
 
-  async function startDM() {
-    if (!newDMUsername.trim()) return;
+  function handleDMSearch(q: string) {
+    setNewDMUsername(q);
     setNewDMError('');
-    // Look up user by username
-    const profileRes = await fetch(`/api/users/${newDMUsername}`);
-    if (!profileRes.ok) { setNewDMError('User not found'); return; }
-    const { user: targetUser } = await profileRes.json();
+    if (q.length < 2) { setUserResults([]); return; }
+    startTransition(() => {
+      fetch(`/api/users/search?q=${encodeURIComponent(q)}`)
+        .then(r => r.json())
+        .then(d => setUserResults(d.users || []));
+    });
+  }
 
+  async function startDM(targetId?: string) {
+    setNewDMError('');
+    let userId = targetId;
+    if (!userId) {
+      if (!newDMUsername.trim()) return;
+      const profileRes = await fetch(`/api/users/${newDMUsername}`);
+      if (!profileRes.ok) { setNewDMError('User not found'); return; }
+      const { user: targetUser } = await profileRes.json();
+      userId = targetUser.id;
+    }
     const res = await fetch('/api/conversations', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId: targetUser.id }),
+      body: JSON.stringify({ userId }),
     });
     if (res.ok) {
       const { conversation } = await res.json();
       await fetchConversations();
       setShowNewDM(false);
       setNewDMUsername('');
+      setUserResults([]);
       openConversation(conversation.id);
     }
   }
@@ -142,19 +158,42 @@ export function MessagesPanel() {
         {/* New DM form */}
         {showNewDM && (
           <div className="p-3 border-b border-gray-100 dark:border-gray-800 bg-brand-cream/50 dark:bg-gray-800/50">
-            <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">Start a conversation</p>
-            <div className="flex gap-2">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-xs font-medium text-gray-600 dark:text-gray-400">Start a conversation</p>
+              <button onClick={() => { setShowNewDM(false); setNewDMError(''); setUserResults([]); setNewDMUsername(''); }} className="p-1 text-gray-400 hover:text-gray-600">
+                <X size={14} />
+              </button>
+            </div>
+            <div className="relative">
               <input
                 value={newDMUsername}
-                onChange={(e) => setNewDMUsername(e.target.value)}
-                placeholder="Username"
-                className="flex-1 text-sm px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-crimson/30"
-                onKeyDown={(e) => e.key === 'Enter' && startDM()}
+                onChange={(e) => handleDMSearch(e.target.value)}
+                placeholder="Search by name or username…"
+                autoFocus
+                className="w-full text-sm px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-crimson/30"
               />
-              <button onClick={startDM} className="px-3 py-2 bg-brand-crimson text-white rounded-lg text-sm">Go</button>
-              <button onClick={() => { setShowNewDM(false); setNewDMError(''); }} className="p-2 text-gray-400 hover:text-gray-600">
-                <X size={15} />
-              </button>
+              {userResults.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg z-10 overflow-hidden">
+                  {userResults.map(u => (
+                    <button
+                      key={u.id}
+                      onClick={() => startDM(u.id)}
+                      className="w-full flex items-center gap-2.5 px-3 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 text-left transition-colors"
+                    >
+                      <div className="w-7 h-7 rounded-full bg-brand-crimson text-white flex items-center justify-center text-xs font-semibold flex-shrink-0">
+                        {u.name[0].toUpperCase()}
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{u.name}</p>
+                        {u.username && <p className="text-xs text-gray-400">@{u.username}</p>}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+              {newDMUsername.length >= 2 && userResults.length === 0 && (
+                <p className="text-xs text-gray-400 mt-1.5 px-1">No users found</p>
+              )}
             </div>
             {newDMError && <p className="text-xs text-red-500 mt-1">{newDMError}</p>}
           </div>
